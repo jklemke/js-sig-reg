@@ -1,0 +1,15 @@
+{
+  "name": "esm-001",
+  "version": "0.0.0",
+  "description": "test app based on John David Dalton Userland talk",
+  "main": "public/index.js",
+  "module": "public/js/prj/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joe Klemke",
+  "license": "ISC",
+  "dependencies": {
+    "esm": "^3.2.25"
+  }
+}
