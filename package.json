@@ -1,5 +1,5 @@
 {
-  "name": "@jklemke/js-sig-reg",
+  "name": "@groxjwk/js-sig-reg",
   "version": "0.0.0",
   "description": "JavaScript signature and register library for working with OWL, RDF, SKOS and similar concepts from propositional logic, description logic, model theory, type theory, set theory and so on.",
   "main": "nodesrc/prj/main.mjs",
