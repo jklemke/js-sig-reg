@@ -1,14 +1,22 @@
 {
-  "name": "esm-001",
+  "name": "@jklemke/js-sig-reg",
   "version": "0.0.0",
-  "description": "test app based on John David Dalton Userland talk",
-  "main": "public/index.js",
-  "module": "public/js/prj/main.js",
+  "description": "JavaScript signature and register library for working with OWL, RDF, SKOS and similar concepts from propositional logic, description logic, model theory, type theory, set theory and so on.",
+  "main": "nodesrc/prj/main.mjs",
+  "module": "web/js/lib/hello.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./nodesrc/prj/main.mjs"
   },
-  "author": "Joe Klemke",
-  "license": "ISC",
+  "contributors": [{
+    "name": "Joe Klemke",
+    "email": "jklemke@grox.com",
+    "url": "https://grox.com"
+  },{
+    "name": "Victor Badinage",
+    "email": "victor.badinage@gmail.com"
+  }
+  ],
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "esm": "^3.2.25"
   }
