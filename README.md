@@ -1,2 +1,3 @@
 # js-sig-reg
-JavaScript signature and register library for working with OWL, RDF, SKOS and similar concepts from propositional logic, description logic, model theory, type theory, set theory and so on.
+
+A JavaScript library for experimenting with concepts from first order logic, description logic, model theory, type theory, set theory, RDF, OWL, SKOS, etc. Aspires to be "standard" open source javascript by using npm, jest, standardjs, EcmaScript modules accessible from both HTML and server-side nodejs.
