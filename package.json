@@ -7,17 +7,22 @@
   "scripts": {
     "test": "node ./nodesrc/prj/main.mjs"
   },
-  "contributors": [{
-    "name": "Joe Klemke",
-    "email": "jklemke@grox.com",
-    "url": "https://grox.com"
-  },{
-    "name": "Victor Badinage",
-    "email": "victor.badinage@gmail.com"
-  }
+  "contributors": [
+    {
+      "name": "Joe Klemke",
+      "email": "jklemke@grox.com",
+      "url": "https://grox.com"
+    },
+    {
+      "name": "Victor Badinage",
+      "email": "victor.badinage@gmail.com"
+    }
   ],
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "esm": "^3.2.25"
+  },
+  "devDependencies": {
+    "standard": "^16.0.4"
   }
 }
