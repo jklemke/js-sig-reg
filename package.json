@@ -5,7 +5,8 @@
   "main": "nodesrc/prj/main.mjs",
   "module": "web/js/lib/hello.mjs",
   "scripts": {
-    "test": "node ./nodesrc/prj/main.mjs"
+    "dev": "node ./nodesrc/prj/main.mjs",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "contributors": [
     {
@@ -23,6 +24,8 @@
     "esm": "^3.2.25"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^27.3.1",
     "standard": "^16.0.4"
   }
 }
