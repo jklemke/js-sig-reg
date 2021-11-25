@@ -1,0 +1,198 @@
+/* Generic Elements 
+   ========================================================================== */
+img{display:block;}
+em{font-style: italic;}
+strong{font-weight:bold;}
+hr{border: 5px solid #e2e2e2; border-width: 0 0 5px 0; margin: 20px 10px 10px 10px;}
+code{color:#0B8C8F;}
+
+.important a{font-weight:bold;}
+
+a {color: Blue; text-decoration: none;}
+a:focus, a:hover { text-decoration: underline;}
+a:focus{background-color:Khaki;} 
+a:visited { color:SaddleBrown; }
+
+cite{display:block; text-align:right; padding-top: 10px;}
+
+.callout{font-size:189%;color:#999999; font-style:italic;}
+.callout cite{display:block; text-align:right;padding-top: 30px; font-size:69.25%;}
+.callout span.quot{font-size: 500%; vertical-align: sub; color:#e2e2e2; line-height:25px; font-weight:bold;}
+.callout span.quotLast{vertical-align:middle;}
+.detail{color: #777; font-size:11px;display:block;}
+
+.icon{margin-right: 5px;}
+
+/* Core Structure (margin and padding for body, header, main, aside, footer, section, article) 
+========================================================================== */
+main {display:inline-block; width:70%; border-right: thin dotted black;}
+aside {display:inline-block; width:20%; float:right; }
+
+body > header {margin: 0% 0% 0% 0%; }
+body > header > h1  {margin: 0% 0% 0% 2%; }
+body > header > nav  > ul {margin:0% 0% 0% 0%; }
+
+main { margin: 0% 1% 1% 5% ;  padding: 1% 1% 1% 1%; }
+main p { margin: 0% 0% 3% 1% ;  padding: 0% 0% 0% 0%; }
+
+section { margin: 0% 0% 1% 1% ;  padding: 0% 0% 0% 0%; }
+section > header { margin: 0% 0% 0% 0% ;  padding: 0% 0% 0% 0%; }
+section > header > h1 { margin: 0% 0% 0% 0% ;  padding: 0% 0% 0% 0%; }
+section > header > nav { margin: 0% 0% 0% 0% ;  padding: 0% 0% 0% 0%; }
+section > header > nav > ul { margin: 0% 0% 0% 0% ;  padding: 0% 0% 0% 0%; }
+section  > table { margin: 1% 0% 2% 1% ;  padding: 0% 0% 1% 0%; }
+
+article {margin-top: 1%;}
+article > header  {margin-left:0%; margin-bottom: 2%; }
+article > header p { margin: 0% 0% 0% 0% ;  padding: 0% 0% 0% 0%; }
+article h1, h2, h3, h4, h5, h6 { margin: 0% 0% 0% 0% ;  padding: 0% 0% 0.5% 0%; }
+article p { margin: 0% 0% 0% 1% ;  padding: 0% 0% 2% 0%; }
+
+aside header {margin: 0 0 0 0; padding: 0 0 0 0; }
+aside header h1 {margin: 0 0 0 0; padding: 0 0 0 0; }
+aside header nav {margin: 0 0 0 0; padding: 0 0 0 0; }
+aside header nav ul {margin: 0 0 0 0; padding: 0 0 0 0; }
+aside ul.asidelist {margin: 1% 0 0 0%; padding: 0 0 0 0; list-style-type: none;}
+aside ul.asidelist li {margin: 0 0 0 1%; padding: 0 0 0 0;}
+
+body > footer  > *  {margin-left:2%; margin-top: 0; }
+body > footer > h1  {margin-bottom:0%; }
+body > footer > nav  > ul {margin-top:0%; }
+
+/* font-family for element types
+========================================================================== */
+body {font-family: 'Sumana', Georgia, 'Times New Roman', Times, serif;}
+h1 {font-family: 'Otomanopee One','Palanquin Dark', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif}
+h2, h3, h4, h5, h6 {font-family: 'Palanquin Dark', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif}
+td, th {font-family: 'GoMonoRegular', 'Source Code Pro', 'Lucida Console',  'Courier New', Courier, monospace}
+
+article h1, h2, h3, h4, h5, h6 {font-family: 'Palanquin Dark', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif}
+article > header > p > span {font-family: 'Otomanopee One','Palanquin Dark', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif}
+article > header > p > small {font-family: 'Palanquin Dark', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif}
+
+/* header h1, h2, h3, h4, h5, h6 size, weight, color
+========================================================================== */
+body > header > h1 {font-size:250%; font-weight:normal; font-style: normal; color:navy;}
+body > header > h2 {font-size:146%; font-weight:normal; font-style: normal; color:midnightblue;}
+body > header > h3 {font-size:122%; font-weight:normal; font-style: normal; color:darkslateblue;}
+body > header > h4 {font-size:108%; font-weight:normal; font-style: normal; color: darkslateblue;}
+body > header > h5 {font-size:100%; font-weight:bold; font-style: normal; color:darkslateblue;}
+body > header > h6 {font-size:100%; font-weight:normal; font-style: normal; color:darkslateblue;}
+
+main > section h1 {font-size:146%; font-weight:normal; font-style: normal; color:darkslateblue;}
+main > section h2 {font-size:122%; font-weight:normal; font-style: normal; color:darkslateblue;}
+main > section h3 {font-size:108%; font-weight:normal; font-style: normal; color:darkslateblue;}
+main > section h4 {font-size:100%; font-weight:normal; font-style: normal; color: darkslateblue;}
+main > section h5 {font-size:100%; font-weight:bold; font-style: normal; color:darkslateblue;}
+main > section h6 {font-size:100%; font-weight:normal; font-style: normal; color:darkslateblue;}
+
+aside > header > h1 {font-size:196%; font-weight:normal; font-style: normal; color:darkslateblue;}
+aside > header > h2 {font-size:122%; font-weight:normal; font-style: normal; color:darkslateblue;}
+aside > header > h3 {font-size:108%; font-weight:normal; font-style: normal; color:darkslateblue;}
+aside > header > h4 {font-size:100%; font-weight:normal; font-style: normal; color: darkslateblue;}
+aside > header > h5 {font-size:100%; font-weight:bold; font-style: normal; color:darkslateblue;}
+aside > header > h6 {font-size:100%; font-weight:normal; font-style: normal; color:darkslateblue;}
+
+article h1 {font-size:122%; font-weight:normal; font-style: normal; color:darkslateblue;}
+article h2 {font-size:122%; font-weight:normal; font-style: normal; color:darkslateblue;}
+article h3 {font-size:108%; font-weight:normal; font-style: normal; color:darkslateblue;}
+article h4 {font-size:100%; font-weight:normal; font-style: normal; color: darkslateblue;}
+article h5 {font-size:100%; font-weight:bold; font-style: normal; color:darkslateblue;}
+article h6 {font-size:100%; font-weight:normal; font-style: normal; color:darkslateblue;}
+
+/* paragraph
+========================================================================== */
+article > header > p > span {font-size:220%; font-weight:normal; font-style: normal; color:navy;}
+article > header > p > small {font-size:100%; font-weight:normal; font-style: normal; color:navy;}
+
+/* list
+========================================================================== */
+body > header > nav > ul.navlist li 
+{
+  display: inline;
+  margin-right: 1em;
+}
+
+aside > header > nav > ul.navlist li 
+{
+  display: inline;
+  margin-right: 1em;
+  font-size: 90%; 
+}
+      
+aside ul.asidelist
+{
+  font-size: 90%; 
+}
+
+/* table
+========================================================================== */
+table 
+{
+   width: 98%; 
+   margin-left: 1%;
+   margin-right: 1%;
+   border-collapse: collapse;
+} 
+
+table table
+{
+   margin-left: 0.25%;
+   margin-right: 0.25%;
+} 
+
+table, td, th 
+{ 
+   border: 1px solid gainsboro; 
+   margin-right: 1%;
+} 
+
+td, th 
+{ 
+   text-align: left; 
+   vertical-align:top;
+   padding: 0.25% 0.25% 0.25% 0.25%; 
+}
+
+/* article
+========================================================================== */
+
+/* media
+========================================================================== */
+
+/* debug-color (uncomment to debug layouts by seeing garish colors on core page blocks)
+========================================================================== */
+/*
+body  { background-color: blue; }
+body > header {background-color: cornflowerblue; }
+body > header > h1  { background-color: gray; }
+body > header > nav  { background-color: yellowgreen; }
+
+body > div.main-wrapper  { background-color: cornflowerblue; }
+body > header > h1  { background-color: gray; }
+body main { background-color: springgreen; }
+xxxmain { margin: 1% 1% 1% 1% ;  padding: 1% 1% 1% 1%; }
+body main p { background-color: gold; }
+
+body section { background-color: lightsalmon; }
+body section  h1,h2,h3,h4,h5,h6 { background-color: gray; }
+
+body article { background-color: bisque; }
+body article  h1,h2,h3,h4,h5,h6  { background-color: gray; }
+
+table { background-color: red; }
+table tr { background-color: blueviolet; }
+table tr th { background-color: lightcoral; }
+xxxtable tr th { margin: 1% 1% 1% 1% ;  padding: 1% 1% 1% 1%; }
+table tr td { background-color: orchid; }
+xxxtable tr td { margin: 1% 1% 1% 1% ;  padding: 1% 1% 1% 1%; }
+
+body aside {background-color: cornflowerblue; }
+body aside header {background-color: blueviolet; }
+body aside h1  { background-color: gray; }
+body aside nav  { background-color:yellowgreen; }
+body aside ul.asidelist  { background-color: lightsalmon; }
+
+body > footer {background-color: cornflowerblue; }
+body > footer small {background-color: lightsalmon; }
+*/
