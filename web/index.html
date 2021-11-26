@@ -19,7 +19,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Palanquin Dark">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Otomanopee One">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source Code Pro">
-  <!-- link rel="stylesheet" href="https://fontlibrary.org//face/go-mono" media="screen" type="text/css" /-->
+  <!-- commented mono font request to eliminate CORS error in VS Code live server -->
+  <!--link rel="stylesheet" href="https://fontlibrary.org//face/go-mono" media="screen" type="text/css" /-->
   <link rel="author" href="humans.txt" />
   <meta name="theme-color" content="#fafafa">
 </head>
@@ -35,9 +36,15 @@
   </header>
     <main>
       <p>grox.info is an experiment in creating a knowledge graph for the vocabulary of model theory, first order logic, semantic web and similar attempts to formalize semantics.</p>
-      <!--input type="submit" value="test Signature" id="testSig" onclick="testtest();"/-->
-      <input type="submit" value="test Signature" id="testSig"/>
-      <input type="submit" value="test Grammar" onclick="testGrammar();"/>
+      <section>
+        <header>
+          <h1>Tests</h1>
+        </header>
+        <label for="username">Username:</label><br />
+        <input type="text" id="usernameTextbox" name="username"><br />
+        <input type="submit" value="Log greeting" id="greetingBtn"/>
+        <input type="submit" value="test Signature" id="signatureBtn"/>
+        <input type="submit" value="test Grammar" id="grammarBtn"/>
       <section>
         <header>
           <h1>Model Theory Vocabulary</h1>
@@ -68,27 +75,14 @@
       <li>Aside item</li>
       <li>Aside item</li>
       <li>Aside item</li>
-    </ul>      
+    </ul>
   </aside>
-  <p><!-- delete after verifying use -->
-    <label for="username">Username:</label><br />
-    <input type="text" id="usernameTextbox" name="username"><br />
-    <input type="submit" value="Log greeting" id="greetingBtn"/>
-    <script type="module" src="js/prj/main.js"></script>
-  </p>
-  <footer>  
+  <footer>
     <small>Copyright &copy; <time datetime="2014">2021</time> grox LLC</small>
   </footer>
   <script src="js/lib/modernizr-3.11.2.min.js"></script>
   <script src="js/lib/plugins.js"></script>
-  <script src="js/prj/util.mjs" type="module"></script>
-  <script src="js/prj/signature.mjs" type="module"></script>
-  <!--
-  <script src="/js/prj/grammar.mjs" type="module"></script>
-  <script src="/js/prj/categorization.mjs" type="module"></script>
-  <script src="/js/prj/test-signature.mjs" type="module"></script>
-  <script src="/js/prj/test-grammar.mjs" type="module"></script>
-  -->
+  <script src="js/prj/main.js" type="module" ></script>
   <script>
     window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
     ga('create', 'UA-210857385-1', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
@@ -96,6 +90,3 @@
   <script src="https://www.google-analytics.com/analytics.js" async></script>
 </body>
 </html>
-
-
-

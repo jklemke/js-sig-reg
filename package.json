@@ -5,7 +5,7 @@
   "main": "nodesrc/prj/main.mjs",
   "module": "web/js/lib/hello.mjs",
   "scripts": {
-    "dev": "node ./nodesrc/prj/main.mjs",
+    "main": "node ./nodesrc/prj/main.mjs",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "contributors": [
