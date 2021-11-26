@@ -1,7 +1,4 @@
-// top level namespace
-// var grox = grox || {}
-
-// utility functions in the grox namespace
+// Copyright 2021 Joe Klemke http://grox.com
 const util = {}
 
 util.checkForMissingPropertyOnObject = function (testValue, testProperty) {
@@ -58,7 +55,6 @@ util.verifyPropertiesOnSignatureType = function (testObject, failOnError) {
     'getSignifier',
     'addAxiom',
     'getAxiomsWithLiteralAsAttributum',
-    'getSignifierParticipationEnum',
     'getSignifiersForPrefLabel'
   ]
   return util.verifyPropertiesOnObject(testObject, 'Signature', propertyArray, failOnError)
@@ -83,17 +79,16 @@ util.verifyPropertiesOnAxiomType = function (testObject, failOnError) {
   return util.verifyPropertiesOnObject(testObject, 'Axiom', propertyArray, failOnError)
 }
 
-util.verifyPropertiesOnGrammarType = function (testObject, failOnError) {
+util.verifyPropertiesOnRegistrationType = function (testObject, failOnError) {
   const propertyArray = [
     'addNamespace',
     'addSignifier',
     'getSignifier',
     'addAxiom',
     'getAxiomsWithLiteralAsAttributum',
-    'getSignifierParticipationEnum',
     'getUniqueQNameForSignifierId'
   ]
-  return util.verifyPropertiesOnObject(testObject, 'Grammar', propertyArray, failOnError)
+  return util.verifyPropertiesOnObject(testObject, 'Registration', propertyArray, failOnError)
 }
 
 util.utilSpud = function () {
@@ -101,5 +96,3 @@ util.utilSpud = function () {
 }
 
 export { util }
-
-// export default grox

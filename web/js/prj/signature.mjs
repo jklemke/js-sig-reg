@@ -1,9 +1,5 @@
-// Copyright 2021,  Joe Klemke, Grox LLC
-// Distributed under GNU LESSER GENERAL PUBLIC LICENSE, http://www.gnu.org/licenses/lgpl.txt
+// Copyright 2021 Joe Klemke http://grox.com
 import { util } from './util.mjs'
-
-// top level grox namespace
-// var grox = grox || {}
 
 // Signature holds the basic structure of namespaces, signifiers, axioms
 const Signature = (
