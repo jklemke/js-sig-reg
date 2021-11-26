@@ -10,17 +10,6 @@ const Signature = (
   // anonymous IIFE function that is called once after the code is parsed, to define the static attributes and methods, and to return the constructor function
   function () {
     // private static attribute (defined once and shared by all Signature objects)
-    // TODO: I'm thinking this was a mistake, better to just let any signifier sit in any position.
-    // but leave it her for the time being
-    const _signifierParticipationEnum = {
-      NOMEN: 1,
-      COPULA: 2,
-      NOMEN_COPULA: 3,
-      ATTRIBUTUM: 4,
-      NOMEN_ATTRIBUTUM: 5,
-      COPULA_ATTRIBUTUM: 6,
-      NOMEN_COPULA_ATTRIBUTUM: 7
-    }
 
     // the actual constructor function which gets invoked by new Signature()
     return function () {
@@ -36,12 +25,11 @@ const Signature = (
       // _Signifier is an IIFE constructor function which is private to Signature
       const _Signifier = (
         function () {
-          return function (QName, prefLabel, signifierParticipation) {
+          return function (QName, prefLabel) {
             // private to each _Signifier instance
             // note: Signifier is immutable, there are only getter methods for these
             let _QName = null
             let _prefLabel = null
-            let _signifierParticipation = null
             const _axiomsWithThisAsNomen = []
             const _axiomsWithThisAsCopula = []
             const _axiomsWithThisAsAttributum = []
@@ -70,10 +58,6 @@ const Signature = (
               return _prefLabel
             }
 
-            this.getSignifierParticipation = function () {
-              return _signifierParticipation
-            }
-
             // TODO: these get statements are the beginning of a SELECT API
             // there may be multiple theorems for a single axiom/triple
             this.getAxiomsWithThisAsNomen = function () {
@@ -95,15 +79,6 @@ const Signature = (
             if (QName.indexOf(':') !== QName.lastIndexOf(':')) { throw new Error('When adding a signifier, only one colon is allowed in QName string.') }
             if (QName.indexOf(':') === QName.length - 1) { throw new Error('When adding a signifier, at least one additional character must follow the colon in QName string.') }
 
-            if (signifierParticipation !== undefined) {
-              if (!signifierParticipation) { throw new Error('When adding a signifier, if signifierParticipationType is specified it must be a signifierParticipationTypeEnum.') }
-              _signifierParticipation = signifierParticipation
-            }
-
-            if (!_signifierParticipation) {
-              _signifierParticipation = _signifierParticipationEnum.NOMEN_ATTRIBUTUM
-            }
-
             if (!prefLabel) {
               if (QName.indexOf(':') === 0) {
                 prefLabel = QName.substring(1)
@@ -119,12 +94,14 @@ const Signature = (
       )()
 
       // _Axiom is an IIFE constructor function which is private to Signature
-      // An Axiom is an in-memory physical structure of an RDF-like triples (Nomen, Copula, Attributum)
+      // An Axiom is an in-memory physical structure of an RDF-like triples,
+      // but instead of Subject/Predicate/Object we use Nomen/Copula/Attributum.
+      // This is because "subject" and "object" are semantically overloaded
       const _Axiom = (
         function () {
           return function (nomen, copula, attributum, altCopulaLabel) {
             // private to each _Axiom instance
-            // Axiom is immutable, there are only getter methods for these
+            // _Axiom is immutable, there are only getter methods for these
             let _nomen
             let _copula
             let _attributumSignifier
@@ -149,7 +126,8 @@ const Signature = (
             }
 
             // _Axiom constructor
-            // TODO: should we automaticaly create new signifiers?  or should we fail if they don't exist?
+            // TODO: should we automaticaly create new signifiers? or should we fail if they don't exist?
+            // at present, we create new signifiers
             if (util.verifyPropertiesOnSignifierType(nomen)) {
               _nomen = nomen
             }
@@ -187,7 +165,11 @@ const Signature = (
             }
             if (_attributumSignifier === undefined) {
               // if Attributum string has one colon, assume the caller wants it to be a new Signifier
-              if (typeof attributum === 'string' && attributum.includes(':') && attributum.lastIndexOf(':') === attributum.indexOf(':')) {
+              if (
+                typeof attributum === 'string' &&
+                attributum.includes(':') &&
+                attributum.lastIndexOf(':') === attributum.indexOf(':')
+              ) {
                 _attributumSignifier = _thisSignature.addSignifier(attributum)
               }
             }
@@ -225,32 +207,6 @@ const Signature = (
           let msg = 'Signifier: '
           msg = msg + 'QName = ' + this.getQName()
           msg = msg + ', prefLabel = ' + this.getPrefLabel()
-          const signifierParticipation = this.getSignifierParticipation()
-          if (signifierParticipation !== undefined) {
-            switch (signifierParticipation) {
-              case _signifierParticipationEnum.NOMEN:
-                msg = msg + ', signifierParticipationType = ' + 'NOMEN'
-                break
-              case _signifierParticipationEnum.COPULA:
-                msg = msg + ', signifierParticipationType = ' + 'COPULA'
-                break
-              case _signifierParticipationEnum.NOMEN_COPULA:
-                msg = msg + ', signifierParticipationType = ' + 'NOMEN_COPULA'
-                break
-              case _signifierParticipationEnum.ATTRIBUTUM:
-                msg = msg + ', signifierParticipationType = ' + 'ATTRIBUTUM'
-                break
-              case _signifierParticipationEnum.NOMEN_ATTRIBUTUM:
-                msg = msg + ', signifierParticipationType = ' + 'NOMEN_ATTRIBUTUM'
-                break
-              case _signifierParticipationEnum.COPULA_ATTRIBUTUM:
-                msg = msg + ', signifierParticipationType = ' + 'COPULA_ATTRIBUTUM'
-                break
-              case _signifierParticipationEnum.NOMEN_COPULA_ATTRIBUTUM:
-                msg = msg + ', signifierParticipationType = ' + 'NOMEN_COPULA_ATTRIBUTUM'
-                break
-            }
-          }
           console.log(msg)
         }
       }
@@ -368,10 +324,6 @@ const Signature = (
           })
         }
         return selectedAxioms
-      }
-
-      this.getSignifierParticipationEnum = function () {
-        return _signifierParticipationEnum
       }
 
       // constructor code for Signature (runs once when the Attributum is instantiated with 'new')
