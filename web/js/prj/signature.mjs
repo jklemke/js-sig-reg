@@ -1,5 +1,6 @@
 // Copyright 2021 Joe Klemke http://grox.com
 import { util } from './util.mjs'
+import { Axiom } from './axiom.mjs'
 
 // Signature contains an immutable basic structure of namespaces, signifiers, axioms
 const Signature = (
@@ -107,136 +108,6 @@ const Signature = (
         }
       }
 
-      // _Axiom is an IIFE constructor function which is private to Signature
-      // An Axiom is an in-memory physical structure of an RDF-like triple,
-      // but instead of Subject/Predicate/Object we use Nomen/Copula/Attributum.
-      // This is because "subject" and "object" are semantically overloaded
-      const _Axiom = (
-        function () {
-          return function (nomen, copula, attributum, altCopulaLabel) {
-            let _nomen
-            let _copula
-            let _attributumSignifier
-            let _attributumLiteral
-            let _copulaLabel = null
-            const _thisAxiom = this
-
-            const _constructAxiom = function (nomen, copula, attributum, altCopulaLabel) {
-              _validateNomenForNewAxiom(nomen)
-              _validateCopulaForNewAxiom(copula)
-              _validateAttributumForNewAxiom(attributum)
-              _copulaLabel = _constructCopulaLabel(_copula, altCopulaLabel)
-              _nomen.notifyOfParticipationAsNomen(_thisAxiom)
-              _copula.notifyOfParticipationAsCopula(_thisAxiom)
-
-              if (util.verifyPropertiesOnSignifierType(_attributumSignifier)) {
-                _attributumSignifier.notifyOfParticipationAsAttributum(_thisAxiom)
-              }
-            }
-
-            const _validateNomenForNewAxiom = function (nomen) {
-              if (util.verifyPropertiesOnSignifierType(nomen)) {
-                _nomen = nomen
-              }
-              if (_nomen === undefined) {
-                const testNomen = _thisSignature.getSignifier(nomen)
-                if (testNomen !== undefined) { _nomen = testNomen }
-              }
-              if (_nomen === undefined) {
-                if (typeof nomen === 'string') {
-                  _nomen = _thisSignature.addSignifier(nomen)
-                }
-              }
-              if (_nomen === undefined) { throw new Error('Invalid Nomen for new Axiom, ' + nomen + '.') }
-            }
-
-            const _validateCopulaForNewAxiom = function (copula) {
-              if (util.verifyPropertiesOnSignifierType(copula)) {
-                _copula = copula
-              }
-              if (_copula === undefined) {
-                const testCopula = _thisSignature.getSignifier(copula)
-                if (testCopula !== undefined) { _copula = testCopula }
-              }
-              if (_copula === undefined) {
-                if (typeof copula === 'string') {
-                  _copula = _thisSignature.addSignifier(copula, altCopulaLabel)
-                }
-              }
-              if (_copula === undefined) { throw new Error('Invalid Copula for new Axiom, ' + copula + '.') }
-            }
-
-            const _validateAttributumForNewAxiom = function () {
-              if (util.verifyPropertiesOnSignifierType(attributum)) {
-                _attributumSignifier = attributum
-              }
-              if (_attributumSignifier === undefined) {
-                const testAttributum = _thisSignature.getSignifier(attributum)
-                if (testAttributum) { _attributumSignifier = testAttributum }
-              }
-              if (_attributumSignifier === undefined) {
-                // if Attributum string has one colon, assume the caller wants it to be a new Signifier
-                if (
-                  typeof attributum === 'string' &&
-                  attributum.includes(':') &&
-                  attributum.lastIndexOf(':') === attributum.indexOf(':')
-                ) {
-                  _attributumSignifier = _thisSignature.addSignifier(attributum)
-                }
-              }
-              if (_attributumSignifier === undefined) {
-                // if Attributum string is any other string, then store it as a string literal
-                if (typeof attributum === 'string') { _attributumLiteral = attributum }
-              }
-              if (_attributumSignifier === undefined && _attributumLiteral === undefined) { throw new Error('Invalid Attributum for new Axiom, ' + attributum + '.') }
-            }
-
-            const _constructCopulaLabel = function (copula, altCopulaLabel) {
-              let copulaLabel
-              if (altCopulaLabel !== undefined && (typeof altCopulaLabel) === 'string') {
-                copulaLabel = altCopulaLabel
-              } else if (util.verifyPropertiesOnSignifierType(copula)) {
-                copulaLabel = copula.getPrefLabel()
-              }
-              return copulaLabel
-            }
-
-            this.getNomen = function () {
-              return _nomen
-            }
-
-            this.getCopula = function () {
-              return _copula
-            }
-
-            this.getCopulaLabel = function () {
-              return _copulaLabel
-            }
-            this.getAttributum = function () {
-              if (_attributumSignifier) { return _attributumSignifier }
-              if (_attributumLiteral) { return _attributumLiteral }
-            }
-
-            _constructAxiom(nomen, copula, attributum, altCopulaLabel)
-          }
-        }
-      )()
-
-      _Axiom.prototype = {
-        // public, non-privileged methods (one copy for all _Axioms)
-        // uses 'this' to call instance-specific methods, but has no access to private attributes or methods
-        log: function () {
-          let msg = 'Nomen ' + this.getNomen().getPrefLabel() + '\nCopula ' + this.getCopula().getPrefLabel() + '\nAttributum '
-          const testAttributum = this.getAttributum()
-          if (util.verifyPropertiesOnSignifierType(testAttributum)) {
-            msg += testAttributum.getPrefLabel()
-          } else {
-            msg += testAttributum.toString()
-          }
-          console.log(msg)
-        }
-      }
-
       // _Signature privileged methods (defined with 'this.', public, unique to each Signature instance, with access to private attributes and methods)
       this.addNamespace = function (prefix, URI) {
         if (prefix.includes(':')) { throw new Error('When adding a namespacePrefix, a colon is not allowed in the prefix name. Specified prefix was ' + prefix) }
@@ -318,7 +189,7 @@ const Signature = (
         if (existingAxiom) {
           return existingAxiom
         } else {
-          const newAxiom = new _Axiom(nomen, copula, attributum, altCopulaLabel)
+          const newAxiom = new Axiom(nomen, copula, attributum, altCopulaLabel, _thisSignature)
           _axioms.push(newAxiom)
           return newAxiom
         }
