@@ -11,28 +11,6 @@ function exerciseGreeting () {
   console.log(greeting('nodesrc/main.mjs'))
 }
 
-function exerciseRegistration () {
-  const signature = new Signature()
-  const registration = new Registration(signature)
-
-  registration.logSignifier('rdf:type')
-  registration.logSignifier('grox:hasTrait')
-  registration.logSignifier('partWrtGen')
-
-  registration.logSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
-  registration.logSignifier('grox:Fy28scb0taxYGdYeexBx3365')
-  registration.logSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')
-  registration.logSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf')
-  registration.logSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo')
-  registration.logSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA')
-  registration.logSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr')
-  registration.logSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya')
-  registration.logSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW')
-  registration.logSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7')
-  registration.logSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0')
-  registration.logSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE')
-}
-
 function exerciseSignature () {
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info')
@@ -106,6 +84,28 @@ function exerciseSignature () {
   traitAxioms.forEach(axiom => {
     axiom.log()
   })
+}
+
+function exerciseRegistration () {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+
+  registration.logSignifier('rdf:type')
+  registration.logSignifier('grox:hasTrait')
+  registration.logSignifier('partWrtGen')
+
+  registration.logSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
+  registration.logSignifier('grox:Fy28scb0taxYGdYeexBx3365')
+  registration.logSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')
+  registration.logSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf')
+  registration.logSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo')
+  registration.logSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA')
+  registration.logSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr')
+  registration.logSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya')
+  registration.logSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW')
+  registration.logSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7')
+  registration.logSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0')
+  registration.logSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE')
 }
 
 function exerciseCategorization () {
