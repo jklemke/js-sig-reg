@@ -22,7 +22,64 @@ const Registration = (
   // to define the static attributes and methods, and to return the constructor function
   function (signature) {
     // --------------------------------------------------------------------------------
-    // private static attribute (defined once and shared by all Registration objects)
+    // private static attributes and functions (defined once and shared by all Registration objects)
+    // with no access to private attributes and functions
+    const _checkForDisjointAttributums = function (disjointAttributumSets, nomenQName, copulaQName) {
+      disjointAttributumSets.forEach((attributumSet) => {
+        const nomenCopulaPairs = disjointAttributumSets.getNomenCopulaPairs()
+        nomenCopulaPairs.forEach((nomenCopulaPair) => {
+          if (nomenCopulaPair.nomen === nomenQName && nomenCopulaPair.copula === copulaQName) {
+            let errorMsg = 'nomen ' + nomenQName + ' and copula ' + copulaQName + ' have already been assigned an attribute in disjoint set \n'
+            attributumSet.forEach((attributum) => {
+              errorMsg += '\t' + attributum + '\n'
+            })
+            throw new Error(errorMsg)
+          }
+        })
+      })
+    }
+
+    const _checkForDisjointCopulas = function (disjointCopulaSets, nomenQName, attributumQName) {
+      disjointCopulaSets.forEach((copulaSet) => {
+        const nomenAttributumPairs = disjointCopulaSets.getNomenAttributumPairs()
+        nomenAttributumPairs.forEach((nomenAttributumPair) => {
+          if (nomenAttributumPair.nomen === nomenQName && nomenAttributumPair.copula === attributumQName) {
+            let errorMsg = 'nomen ' + nomenQName + ' and attributum ' + attributumQName + ' already been assigned a copula in disjoint set \n'
+            copulaSet.forEach((copula) => {
+              errorMsg += '\t' + copula + '\n'
+            })
+            throw new Error(errorMsg)
+          }
+        })
+      })
+    }
+
+    // retrieve a QName either by QName, signifier reference,
+    // or by unique prefLabel, if it exists
+    // throws an error if called with a duplicated prefLabel
+    const _getUniqueQNameForSignifierId = function (signifierId, signature) {
+      let existingQNames
+      let existingQName
+      let numQNames = 0
+      const existingSignifier = signature.getSignifier(signifierId)
+      if (existingSignifier) {
+        existingQName = existingSignifier.getQName()
+      } else {
+        const existingSignifiersForPrefLabel = signature.getSignifiersForPrefLabel(signifierId)
+        if (existingSignifiersForPrefLabel) {
+          for (const sigId in existingSignifiersForPrefLabel) {
+            existingQNames = sigId + ' '
+            numQNames++
+          }
+          if (numQNames > 1) {
+            throw new Error('prefLabel = ' + signifierId + ' has been used for multiple QNames = ' + existingQNames)
+          } else {
+            existingQName = existingQNames.trim()
+          }
+        }
+      }
+      return existingQName
+    }
 
     // the actual, anonymous constructor function which gets invoked by 'new Registration()'
     return function (signature) {
@@ -151,35 +208,8 @@ const Registration = (
         return existingDisjointSets
       }
 
-      // retrieve a QName either by QName, signifier reference,
-      // or by unique prefLabel, if it exists
-      // throws an error if called with a duplicated prefLabel
-      const _getUniqueQNameForSignifierId = function (signifierId) {
-        let existingQNames
-        let existingQName
-        let numQNames = 0
-        const existingSignifier = _signature.getSignifier(signifierId)
-        if (existingSignifier) {
-          existingQName = existingSignifier.getQName()
-        } else {
-          const existingSignifiersForPrefLabel = _signature.getSignifiersForPrefLabel(signifierId)
-          if (existingSignifiersForPrefLabel) {
-            for (const sigId in existingSignifiersForPrefLabel) {
-              existingQNames = sigId + ' '
-              numQNames++
-            }
-            if (numQNames > 1) {
-              throw new Error('prefLabel = ' + signifierId + ' has been used for multiple QNames = ' + existingQNames)
-            } else {
-              existingQName = existingQNames.trim()
-            }
-          }
-        }
-        return existingQName
-      }
-
-      // Signature allows duplicate prefLabels,
-      // but here we provide a mechanism for unique prefLabels
+      // Signature allows duplicate prefLabels, but
+      // here in Registration we provide a mechanism for unique prefLabels
       const _checkForDuplicatePrefLabels = function (prefLabel) {
         const existingSignifiersForPrefLabel = _signature.getSignifiersForPrefLabel(prefLabel)
         if (existingSignifiersForPrefLabel) {
@@ -252,7 +282,7 @@ const Registration = (
 
       // signifierId can be a QName, a reference to a Signifier Object, or a uniquely-enforced prefLabel
       this.getUniqueQNameForSignifierId = function (signifierId) {
-        return _getUniqueQNameForSignifierId(signifierId)
+        return _getUniqueQNameForSignifierId(signifierId, _signature)
       }
 
       // this version of addAxiom checks for attempts to add axioms with disjoint attributums
@@ -271,32 +301,8 @@ const Registration = (
         const disjointAttributumSets = _getDisjointSetsforAttributum()
         const disjointCopulaSets = _getDisjointSetsforCopula()
 
-        // TODO: logic here to test for disjoint attributums
-        disjointAttributumSets.forEach((attributumSet) => {
-          const nomenCopulaPairs = disjointAttributumSets.getNomenCopulaPairs()
-          nomenCopulaPairs.forEach((nomenCopulaPair) => {
-            if (nomenCopulaPair.nomen === nomenQName && nomenCopulaPair.copula === copulaQName) {
-              let errorMsg = 'nomen ' + nomenQName + ' and copula ' + copulaQName + ' already been assigned an attribute in disjoint set \n'
-              attributumSet.forEach((attributum) => {
-                errorMsg += '\t' + attributum + '\n'
-              })
-              throw new Error(errorMsg)
-            }
-          })
-        })
-
-        disjointCopulaSets.forEach((copulaSet) => {
-          const nomenAttributumPairs = disjointCopulaSets.getNomenAttributumPairs()
-          nomenAttributumPairs.forEach((nomenAttributumPair) => {
-            if (nomenAttributumPair.nomen === nomenQName && nomenAttributumPair.copula === copulaQName) {
-              let errorMsg = 'nomen ' + nomenQName + ' and copula ' + copulaQName + ' already been assigned an attribute in disjoint set \n'
-              copulaSet.forEach((copula) => {
-                errorMsg += '\t' + copula + '\n'
-              })
-              throw new Error(errorMsg)
-            }
-          })
-        })
+        _checkForDisjointAttributums(disjointAttributumSets, nomenQName, copulaQName)
+        _checkForDisjointCopulas(disjointCopulaSets, nomenQName, attributumQName)
 
         return _signature.addAxiom(nomen, copula, attributum, altCopulaLabel)
       }

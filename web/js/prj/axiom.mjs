@@ -6,7 +6,19 @@ import { util } from './util.mjs'
 // but instead of Subject/Predicate/Object we use Nomen/Copula/Attributum.
 // This is because "subject","object", and "predicate" are semantically overloaded
 const Axiom = (
+
   function () {
+    // static functions that don't require access to private attributes
+    const _constructCopulaLabel = function (copula, altCopulaLabel) {
+      let copulaLabel
+      if (altCopulaLabel !== undefined && (typeof altCopulaLabel) === 'string') {
+        copulaLabel = altCopulaLabel
+      } else if (util.verifyPropertiesOnSignifierType(copula)) {
+        copulaLabel = copula.getPrefLabel()
+      }
+      return copulaLabel
+    }
+
     return function (nomen, copula, attributum, altCopulaLabel, signature) {
       let _nomen
       let _copula
@@ -84,16 +96,6 @@ const Axiom = (
           if (typeof attributum === 'string') { _attributumLiteral = attributum }
         }
         if (_attributumSignifier === undefined && _attributumLiteral === undefined) { throw new Error('Invalid Attributum for new Axiom, ' + attributum + '.') }
-      }
-
-      const _constructCopulaLabel = function (copula, altCopulaLabel) {
-        let copulaLabel
-        if (altCopulaLabel !== undefined && (typeof altCopulaLabel) === 'string') {
-          copulaLabel = altCopulaLabel
-        } else if (util.verifyPropertiesOnSignifierType(copula)) {
-          copulaLabel = copula.getPrefLabel()
-        }
-        return copulaLabel
       }
 
       this.getNomen = function () {
