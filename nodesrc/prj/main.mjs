@@ -12,6 +12,8 @@ function exerciseGreeting () {
 }
 
 function exerciseSignature () {
+  console.log('exerciseSignature ----------------------------------------')
+
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info')
   signature.addNamespace('grox', 'http://www.grox.info/')
@@ -24,8 +26,6 @@ function exerciseSignature () {
   signature.addNamespace('skos', 'http://www.w3.org/2004/02/skos/core#')
   signature.addNamespace('grox', 'http://www.grox.info/')
   signature.addNamespace('foaf', 'http://xmlns.com/foaf/0.1/')
-
-  console.log('signifiers ----------------------------------------')
 
   const hasTraitSig = signature.addSignifier('grox:hasTrait')
   hasTraitSig.log()
@@ -87,6 +87,7 @@ function exerciseSignature () {
 }
 
 function exerciseRegistration () {
+  console.log('exerciseRegistration ----------------------------------------')
   const signature = new Signature()
   const registration = new Registration(signature)
 
