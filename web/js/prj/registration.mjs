@@ -3,6 +3,19 @@ import { Signature } from './signature.mjs'
 import { util } from './util.mjs'
 
 // this is a reference to a function, so can be used with 'new'
+// TODO: logic for these
+// hasTrait is asymmetric
+// specimenOfSpecies is inverse
+// species, genus, supergenus is transitive
+// instance, class, superclass is transitive
+// domain is top level aggregate for all aggregate. a situation is anything in a domain (existence)
+// specimen, species and genus are categorization, that is they do not copy trait
+// instance, class, and superclass are classification, that is they do copy traits
+// every item in the plurality must have the prototypical traits of the prototype
+// consecutive of enumeration are ordered
+// item of list is unordered finite list
+// expression is a molecular, combination of other aggregates
+
 const Registration = (
 
   // anonymous IIFE function that is called once after the code is parsed,
@@ -24,8 +37,7 @@ const Registration = (
       // --------------------------------------------------------------------------------
       // private methods, unique to each Registration instance,
       // with access to private attributes and methods
-
-      const _constructRegistration = function () {
+      const _constructRegistration = function (signature) {
         if (signature === undefined) { throw new Error('new Registration() is missing required argument: signature') }
         if (util.verifyPropertiesOnSignatureType(signature, 'fail')) {
           _signature = signature
@@ -125,18 +137,6 @@ const Registration = (
         // copulas of trait hierarchies
         _validateAndAddSignifier('grox:OT7cRTTm9suVcCmdkxVXn9hx', 'isSubTraitOf')
 
-        // TODO: logic for these
-        // hasTrait is asymmetric
-        // specimenOfSpecies is inverse
-        // species, genus, supergenus is transitive
-        // instance, class, superclass is transitive
-        // domain is top level aggregate for all aggregate. a situation is anything in a domain (existence)
-        // specimen, species and genus are categorization, that is they do not copy trait
-        // instance, class, and superclass are classification, that is they do copy traits
-        // every item in the plurality must have the prototypical traits of the prototype
-        // consecutive of enumeration are ordered
-        // item of list is unordered finite list
-        // expression is a molecular, combination of other aggregates
 
         // temp tests to ensure these classes can be instantiated
         const genChain = new _GeneralizationChain()
@@ -303,7 +303,7 @@ const Registration = (
       }
 
       // constructor code for Registration, which runs once when the object is instantiated with 'new Registration()'
-      _constructRegistration()
+      _constructRegistration(signature)
     }
   }
 )()
@@ -311,7 +311,7 @@ const Registration = (
 // when 'new' is called, a copy of the prototype is created, and the constructor code is run on it
 Registration.prototype = {
   // public, non-privileged methods (one copy for all objects,
-  // uses 'this' to call object-specific methods and attributes, 
+  // uses 'this' to call object-specific methods and attributes,
   // but has no access to private attributes or methods)
   logSignifier: function (signifierId) {
     const signifier = this.getSignifier(signifierId)

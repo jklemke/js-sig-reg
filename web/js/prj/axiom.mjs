@@ -4,7 +4,7 @@ import { util } from './util.mjs'
 // Axiom is an IIFE constructor, instantiated with new Axiom
 // An Axiom is an in-memory physical structure of an RDF-like triple,
 // but instead of Subject/Predicate/Object we use Nomen/Copula/Attributum.
-// This is because "subject" and "object" are semantically overloaded
+// This is because "subject","object", and "predicate" are semantically overloaded
 const Axiom = (
   function () {
     return function (nomen, copula, attributum, altCopulaLabel, signature) {
@@ -61,7 +61,7 @@ const Axiom = (
         if (_copula === undefined) { throw new Error('Invalid Copula for new Axiom, ' + copula + '.') }
       }
 
-      const _validateAttributumForNewAxiom = function () {
+      const _validateAttributumForNewAxiom = function (attributum) {
         if (util.verifyPropertiesOnSignifierType(attributum)) {
           _attributumSignifier = attributum
         }
@@ -118,8 +118,6 @@ const Axiom = (
 )()
 
 Axiom.prototype = {
-  // public, non-privileged methods (one copy for all _Axioms)
-  // uses 'this' to call instance-specific methods, but has no access to private attributes or methods
   log: function () {
     let msg = 'Nomen ' + this.getNomen().getPrefLabel() + '\nCopula ' + this.getCopula().getPrefLabel() + '\nAttributum '
     const testAttributum = this.getAttributum()
