@@ -15,11 +15,11 @@ const Signature = (
       // --------------------------------------------------------------------------------
       // private attributes, unique to each Signature instance
       // Signature is immutable, there are only getter methods for these
-      const _thisSignature = this
       const _namespaces = {}
       const _axioms = []
       const _signifiers = {}
       const _prefLabels = {}
+      const _thisSignature = this
 
       // --------------------------------------------------------------------------------
       // private methods, unique to each Signature instance, with access to private attributes and methods
@@ -30,13 +30,17 @@ const Signature = (
       const _Signifier = (
         function () {
           return function (QName, prefLabel) {
+            // private attributes, unique to each _Signifier instance
+            // Signifier is immutable, so there are only getter methods for these
             let _QName = null
             let _prefLabel = null
             const _axiomsWithThisAsNomen = []
             const _axiomsWithThisAsCopula = []
             const _axiomsWithThisAsAttributum = []
 
-            const _constructSignifier = function (QName, prefLabel) {
+            // --------------------------------------------------------------------------------
+            // private methods, unique to each Signifier instance, with access to private attributes and methods
+            const _constructSignifier = function () {
               if (QName === undefined) { throw new Error('Invalid QName for new signifier, ' + QName + '.') }
               if (typeof QName !== 'string') { throw new Error('When adding a signifier, QName must be a string.') }
               if (QName.indexOf(':') < 0) { throw new Error('When adding a signifier, QName must have a registered namespace prefix or use ":" in first position to indicate default namespace.') }
@@ -53,6 +57,7 @@ const Signature = (
               _prefLabel = prefLabel
             }
 
+            // public _Signifier methods
             this.notifyOfParticipationAsNomen = function (axiom) {
               _axiomsWithThisAsNomen.push(axiom)
               if (axiom.getCopulaLabel() !== undefined) {
@@ -91,7 +96,7 @@ const Signature = (
             }
 
             // _Signifier constructor code
-            _constructSignifier(QName, prefLabel)
+            _constructSignifier()
           }
         }
       )()
@@ -108,99 +113,25 @@ const Signature = (
       }
 
       // _Axiom is an IIFE constructor function which is private to Signature
-      // An Axiom is an in-memory physical structure of an RDF-like triple,
+      // An Axiom is an in-memory physical structure of an RDF-like triples,
       // but instead of Subject/Predicate/Object we use Nomen/Copula/Attributum.
       // This is because "subject" and "object" are semantically overloaded
       const _Axiom = (
         function () {
           return function (nomen, copula, attributum, altCopulaLabel) {
+            // --------------------------------------------------------------------------------
+            // private attributes, unique to each Axiom instance
+            // _Axiom is immutable, there are only getter methods for these
             let _nomen
             let _copula
             let _attributumSignifier
             let _attributumLiteral
             let _copulaLabel = null
-            const _thisAxiom = this
 
-            const _constructAxiom = function (nomen, copula, attributum, altCopulaLabel) {
-              _validateNomenForNewAxiom(nomen)
-              _validateCopulaForNewAxiom(copula)
-              _validateAttributumForNewAxiom(attributum)
-              _copulaLabel = _constructCopulaLabel(_copula, altCopulaLabel)
-              _nomen.notifyOfParticipationAsNomen(_thisAxiom)
-              _copula.notifyOfParticipationAsCopula(_thisAxiom)
+            // --------------------------------------------------------------------------------
+            // private methods, unique to each  instance, with access to private attributes and methods
 
-              if (util.verifyPropertiesOnSignifierType(_attributumSignifier)) {
-                _attributumSignifier.notifyOfParticipationAsAttributum(_thisAxiom)
-              }
-            }
-
-            const _validateNomenForNewAxiom = function (nomen) {
-              if (util.verifyPropertiesOnSignifierType(nomen)) {
-                _nomen = nomen
-              }
-              if (_nomen === undefined) {
-                const testNomen = _thisSignature.getSignifier(nomen)
-                if (testNomen !== undefined) { _nomen = testNomen }
-              }
-              if (_nomen === undefined) {
-                if (typeof nomen === 'string') {
-                  _nomen = _thisSignature.addSignifier(nomen)
-                }
-              }
-              if (_nomen === undefined) { throw new Error('Invalid Nomen for new Axiom, ' + nomen + '.') }
-            }
-
-            const _validateCopulaForNewAxiom = function (copula) {
-              if (util.verifyPropertiesOnSignifierType(copula)) {
-                _copula = copula
-              }
-              if (_copula === undefined) {
-                const testCopula = _thisSignature.getSignifier(copula)
-                if (testCopula !== undefined) { _copula = testCopula }
-              }
-              if (_copula === undefined) {
-                if (typeof copula === 'string') {
-                  _copula = _thisSignature.addSignifier(copula, altCopulaLabel)
-                }
-              }
-              if (_copula === undefined) { throw new Error('Invalid Copula for new Axiom, ' + copula + '.') }
-            }
-
-            const _validateAttributumForNewAxiom = function () {
-              if (util.verifyPropertiesOnSignifierType(attributum)) {
-                _attributumSignifier = attributum
-              }
-              if (_attributumSignifier === undefined) {
-                const testAttributum = _thisSignature.getSignifier(attributum)
-                if (testAttributum) { _attributumSignifier = testAttributum }
-              }
-              if (_attributumSignifier === undefined) {
-                // if Attributum string has one colon, assume the caller wants it to be a new Signifier
-                if (
-                  typeof attributum === 'string' &&
-                  attributum.includes(':') &&
-                  attributum.lastIndexOf(':') === attributum.indexOf(':')
-                ) {
-                  _attributumSignifier = _thisSignature.addSignifier(attributum)
-                }
-              }
-              if (_attributumSignifier === undefined) {
-                // if Attributum string is any other string, then store it as a string literal
-                if (typeof attributum === 'string') { _attributumLiteral = attributum }
-              }
-              if (_attributumSignifier === undefined && _attributumLiteral === undefined) { throw new Error('Invalid Attributum for new Axiom, ' + attributum + '.') }
-            }
-
-            const _constructCopulaLabel = function (copula, altCopulaLabel) {
-              let copulaLabel
-              if (altCopulaLabel !== undefined && (typeof altCopulaLabel) === 'string') {
-                copulaLabel = altCopulaLabel
-              } else if (util.verifyPropertiesOnSignifierType(copula)) {
-                copulaLabel = copula.getPrefLabel()
-              }
-              return copulaLabel
-            }
-
+            // public _Axiom methods
             this.getNomen = function () {
               return _nomen
             }
@@ -217,7 +148,77 @@ const Signature = (
               if (_attributumLiteral) { return _attributumLiteral }
             }
 
-            _constructAxiom(nomen, copula, attributum, altCopulaLabel)
+            // _Axiom constructor
+            // TODO: should we automaticaly create new signifiers? or should we fail if they don't exist?
+            // at present, we create new signifiers
+            if (util.verifyPropertiesOnSignifierType(nomen)) {
+              _nomen = nomen
+            }
+            if (_nomen === undefined) {
+              const testNomen = _thisSignature.getSignifier(nomen)
+              if (testNomen !== undefined) { _nomen = testNomen }
+            }
+            if (_nomen === undefined) {
+              if (typeof nomen === 'string') {
+                _nomen = _thisSignature.addSignifier(nomen)
+              }
+            }
+            if (_nomen === undefined) { throw new Error('Invalid Nomen for new Axiom, ' + nomen + '.') }
+
+            if (util.verifyPropertiesOnSignifierType(copula)) {
+              _copula = copula
+            }
+            if (_copula === undefined) {
+              const testCopula = _thisSignature.getSignifier(copula)
+              if (testCopula !== undefined) { _copula = testCopula }
+            }
+            if (_copula === undefined) {
+              if (typeof copula === 'string') {
+                _copula = _thisSignature.addSignifier(copula, altCopulaLabel)
+              }
+            }
+            if (_copula === undefined) { throw new Error('Invalid Copula for new Axiom, ' + copula + '.') }
+
+            if (util.verifyPropertiesOnSignifierType(attributum)) {
+              _attributumSignifier = attributum
+            }
+            if (_attributumSignifier === undefined) {
+              const testAttributum = _thisSignature.getSignifier(attributum)
+              if (testAttributum) { _attributumSignifier = testAttributum }
+            }
+            if (_attributumSignifier === undefined) {
+              // if Attributum string has one colon, assume the caller wants it to be a new Signifier
+              if (
+                typeof attributum === 'string' &&
+                attributum.includes(':') &&
+                attributum.lastIndexOf(':') === attributum.indexOf(':')
+              ) {
+                _attributumSignifier = _thisSignature.addSignifier(attributum)
+              }
+            }
+            if (_attributumSignifier === undefined) {
+              // if Attributum string is any other string, then store it as a string literal
+              if (typeof attributum === 'string') { _attributumLiteral = attributum }
+            }
+            if (_attributumSignifier === undefined && _attributumLiteral === undefined) { throw new Error('Invalid Attributum for new Axiom, ' + attributum + '.') }
+
+            _copulaLabel = _constructCopulaLabel(_copula, altCopulaLabel)
+            _nomen.notifyOfParticipationAsNomen(this)
+            _copula.notifyOfParticipationAsCopula(this)
+
+            if (util.verifyPropertiesOnSignifierType(_attributumSignifier)) {
+              _attributumSignifier.notifyOfParticipationAsAttributum(this)
+            }
+          }
+
+          function _constructCopulaLabel (copula, altCopulaLabel) {
+            let copulaLabel
+            if (altCopulaLabel !== undefined && (typeof altCopulaLabel) === 'string') {
+              copulaLabel = altCopulaLabel
+            } else if (util.verifyPropertiesOnSignifierType(copula)) {
+              copulaLabel = copula.getPrefLabel()
+            }
+            return copulaLabel
           }
         }
       )()

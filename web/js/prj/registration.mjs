@@ -8,101 +8,31 @@ const Registration = (
   // anonymous IIFE function that is called once after the code is parsed,
   // to define the static attributes and methods, and to return the constructor function
   function (signature) {
+    // --------------------------------------------------------------------------------
     // private static attribute (defined once and shared by all Registration objects)
-    // none at the moment
 
     // the actual, anonymous constructor function which gets invoked by 'new Registration()'
     return function (signature) {
+    // --------------------------------------------------------------------------------
       // private attributes, unique to each Registration instance
       // Registration is immutable, there are only getters and adders for these
       let _signature = new Signature() // check that Signature object is imported properly
-      _signature = undefined // revert to unitialized Signature object
+      _signature = undefined // revert to uninitialized Signature object
       const _generalizationChains = []
       const _disjointAttributumSets = []
 
-      // private methods, unique to each Registration instance, with access to private attributes and methods
+      // --------------------------------------------------------------------------------
+      // private methods, unique to each Registration instance,
+      // with access to private attributes and methods
 
-      // _GeneralizationChain is an IIFE constructor function which is private to Registration
-      // it is a linked list from bottomGen to topGen, with transitive links between top and bottom.
-      // two possible initializations:
-      //    if isTopGen
-      //      subGen becomes bottomGen, subGen and superGen form a link, topGen is null (can be set later)
-      //    if not isTopGen
-      //      subgen becomes bottomGen, subGen and superGen form a link, superGen is set as topGen, which cannot be changed
-      // copula is immutable, topGen is immutable once set.
-      // bottomGen can be changed by setting a new link
-      // new link can be inserted between an existing generalizationLink
-      const _GeneralizationChain = (
-
-        // anonymous function which returns the _GeneralizationChain constructor
-        function () {
-          return function (copula, subGen, superGen, isTopGen) {
-            // private attributes, unique to each _GeneralizationChain instance
-            // let _bottomGeneralization
-            // let _topGeneralization
-            // let _generalizationLink = {
-            //   narrowerGeneralization: null,
-            //   broaderGeneralization: null
-            // }
-
-            // private methods, unique to each _GeneralizationChain instance, with access to private attributes and methods
-            // public _GeneralizationChain methods
-
-            // _GeneralizationChain constructor code
-          }
+      const _constructRegistration = function () {
+        if (signature === undefined) { throw new Error('new Registration() is missing required argument: signature') }
+        if (util.verifyPropertiesOnSignatureType(signature, 'fail')) {
+          _signature = signature
         }
-      )()
-
-      // _DisjointAttributum is an IIFE constructor function which is private to Registration
-      // it tracks sets of signifiers which are not allowed to belong to the same nomen & copula pair
-      const _DisjointAttributumSet = (
-
-        // anonymous function which returns the _DisjointAttributumSet constructor
-        function () {
-          return function (attributumArray) {
-            // private attributes, unique to each _DisjointAttributumSet instance
-            const _disjointAttributums = {}
-            const _nomenCopulaPairs = [{
-              nomen: {},
-              copula: {}
-            }]
-
-            // private methods, unique to each _DisjointAttributumSet instance, with access to private attributes and methods
-            // no private methods
-
-            // public methods for _DisjointAttributumSet
-            this.getAttributumSet = function () {
-              return _disjointAttributums
-            }
-
-            this.addNomenCopulaPair = function (nomen, copula) {
-              const validatedNomen = _signature.getSignifier(nomen)
-              if (!validatedNomen) { throw new Error('invalid nomen for disjointAttributumSet: ' + nomen) }
-              const validatedCopula = _signature.getSignifier(copula)
-              if (!validatedCopula) { throw new Error('invalid copula for disjointAttributumSet: ' + copula) }
-              _nomenCopulaPairs.push({ nomen: validatedNomen, copula: validatedCopula })
-            }
-
-            this.getNomenCopulaPairs = function () {
-              return _nomenCopulaPairs
-            }
-
-            // _DisjointAttributumSet constructor code
-            const validatedAttributumArray = []
-            for (const signifierId in attributumArray) {
-              const signifier = _signature.getSignifier(signifierId)
-              if (!signifier) { throw new Error('invalid signifier for disjointAttributumSet: ' + signifierId) }
-              validatedAttributumArray.push(signifier)
-            }
-            if (validatedAttributumArray) {
-              for (const signifier in validatedAttributumArray) {
-                const qname = signifier.getQName()
-                _disjointAttributums[qname] = signifier
-              }
-            }
-          }
-        }
-      )()
+        _addCoreNamespaces()
+        _addCoreSignifiers()
+      }
 
       const _getDisjointSetsforAttributum = function (attributum) {
         const existingDisjointSets = []
@@ -116,7 +46,9 @@ const Registration = (
         return existingDisjointSets
       }
 
-      // grox.Signature allows duplicate prefLabels, but for the default signifiers in grox.Categorization we require unique prefLabels
+      // retrieve a QName either by QName, signifier reference,
+      // or by unique prefLabel, if it exists
+      // throws an error if called with a duplicated prefLabel
       const _getUniqueQNameForSignifierId = function (signifierId) {
         let existingQNames
         let existingQName
@@ -141,7 +73,8 @@ const Registration = (
         return existingQName
       }
 
-      // Signature allows duplicate prefLabels, but for the core signifiers in Registration we do not allow duplicate prefLabels
+      // Signature allows duplicate prefLabels,
+      // but here we provide a mechanism for unique prefLabels
       const _checkForDuplicatePrefLabels = function (prefLabel) {
         const existingSignifiersForPrefLabel = _signature.getSignifiersForPrefLabel(prefLabel)
         if (existingSignifiersForPrefLabel) {
@@ -211,6 +144,88 @@ const Registration = (
         const disjointAttributumSet = new _DisjointAttributumSet()
         _disjointAttributumSets.push(disjointAttributumSet)
       }
+
+      // _GeneralizationChain is an IIFE constructor function which is private to Registration
+      // it is a linked list from bottomGen to topGen, with transitive links between top and bottom.
+      // two possible initializations:
+      //    if isTopGen
+      //      subGen becomes bottomGen, subGen and superGen form a link, topGen is null (can be set later)
+      //    if not isTopGen
+      //      subgen becomes bottomGen, subGen and superGen form a link, superGen is set as topGen, which cannot be changed
+      // copula is immutable, topGen is immutable once set.
+      // bottomGen can be changed by setting a new link
+      // new link can be inserted between an existing generalizationLink
+      const _GeneralizationChain = (
+
+        // anonymous function which returns the _GeneralizationChain constructor
+        function () {
+          return function (copula, subGen, superGen, isTopGen) {
+            // private attributes, unique to each _GeneralizationChain instance
+            // let _bottomGeneralization
+            // let _topGeneralization
+            // let _generalizationLink = {
+            //   narrowerGeneralization: null,
+            //   broaderGeneralization: null
+            // }
+
+            // private methods, unique to each _GeneralizationChain instance, with access to private attributes and methods
+            // public _GeneralizationChain methods
+
+            // _GeneralizationChain constructor code
+          }
+        }
+      )()
+
+      // _DisjointAttributum is an IIFE constructor function which is private to Registration
+      // it tracks sets of signifiers which are not allowed to be attributums of the same nomen & copula pair
+      const _DisjointAttributumSet = (
+
+        // anonymous function which returns the _DisjointAttributumSet constructor
+        function () {
+          return function (attributumArray) {
+            // private attributes, unique to each _DisjointAttributumSet instance
+            const _disjointAttributums = {}
+            const _nomenCopulaPairs = [{
+              nomen: {},
+              copula: {}
+            }]
+
+            // private methods, unique to each _DisjointAttributumSet instance, with access to private attributes and methods
+            // no private methods
+
+            // public methods for _DisjointAttributumSet
+            this.getAttributumSet = function () {
+              return _disjointAttributums
+            }
+
+            this.addNomenCopulaPair = function (nomen, copula) {
+              const validatedNomen = _signature.getSignifier(nomen)
+              if (!validatedNomen) { throw new Error('invalid nomen for disjointAttributumSet: ' + nomen) }
+              const validatedCopula = _signature.getSignifier(copula)
+              if (!validatedCopula) { throw new Error('invalid copula for disjointAttributumSet: ' + copula) }
+              _nomenCopulaPairs.push({ nomen: validatedNomen, copula: validatedCopula })
+            }
+
+            this.getNomenCopulaPairs = function () {
+              return _nomenCopulaPairs
+            }
+
+            // _DisjointAttributumSet constructor code
+            const validatedAttributumArray = []
+            for (const signifierId in attributumArray) {
+              const signifier = _signature.getSignifier(signifierId)
+              if (!signifier) { throw new Error('invalid signifier for disjointAttributumSet: ' + signifierId) }
+              validatedAttributumArray.push(signifier)
+            }
+            if (validatedAttributumArray) {
+              for (const signifier in validatedAttributumArray) {
+                const qname = signifier.getQName()
+                _disjointAttributums[qname] = signifier
+              }
+            }
+          }
+        }
+      )()
 
       // 'this' defines a privileged method which is public, unique to each object instance, with access to private attributes and methods
       // TODO: the basic idea is for a Registration to manipulate a Signature
@@ -288,12 +303,7 @@ const Registration = (
       }
 
       // constructor code for Registration, which runs once when the object is instantiated with 'new Registration()'
-      if (signature === undefined) { throw new Error('new Registration() is missing required argument: signature') }
-      if (util.verifyPropertiesOnSignatureType(signature, 'fail')) {
-        _signature = signature
-      }
-      _addCoreNamespaces()
-      _addCoreSignifiers()
+      _constructRegistration()
     }
   }
 )()
@@ -311,7 +321,6 @@ Registration.prototype = {
       console.log('Signifier: ' + signifierId + ' is undefined')
     }
   },
-  // TODO: need fully fleshed out getAxiomAPI
   logAxiomsWithNomen: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {

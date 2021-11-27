@@ -37,9 +37,8 @@ test('new Registration() with core Signifiers', () => {
   expect(registration.getSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE')).not.toBeUndefined()
 })
 
-/*
-test('new Registration() with new Signature()', () => {
-  const signature = new Signature()
-  expect(new Registration(signature)).not.toBeUndefined()
+test('new GeneralizationChain', () => {
 })
-*/
+
+test('disjoint Attributum', () => {
+})
