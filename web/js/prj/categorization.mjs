@@ -9,17 +9,28 @@ const Categorization = (
   // anonymous IIFE function that is called once after the code is parsed,
   // to define the static attributes and methods, and to return the constructor function
   function (registration) {
+    // --------------------------------------------------------------------------------
     // private static attribute (defined once and shared by all Categorization objects)
     // none for now
 
     // the actual, anonymous constructor function which gets invoked by 'new Categorization()'
     return function (registration) {
+    // --------------------------------------------------------------------------------
       // private attributes, unique to each Categorization instance
       // Categorization is immutable, there are only getters for these
       let _registration = new Registration(new Signature()) // check that Registration object is imported properly
       _registration = undefined // revert to unitialized Registration object
 
+      // --------------------------------------------------------------------------------
       // private methods, unique to each Categorization instance, with access to private attributes and methods
+      const _constructCategorization = function (registration) {
+        if (registration === undefined) { throw new Error('new Categorization() is missing required argument: registration') }
+        if (util.verifyPropertiesOnRegistrationType(registration, 'fail')) {
+          _registration = registration
+        }
+        _addCategorizationSignifiers()
+      }
+
       const _validateAndAddCategorizationAxioms = function (QName, prefLabel, attributum) {
         const attributumQName = _registration.getUniqueQNameForSignifierId(attributum)
         const copulaQName = _registration.getUniqueQNameForSignifierId('isSubTraitOf')
@@ -37,16 +48,12 @@ const Categorization = (
         _validateAndAddCategorizationAxioms('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'topDomainWrtsubGen')
       }
 
-      // 'this' defines a privileged method which is public, unique to each object instance, with access to private attributes and methods
+      // --------------------------------------------------------------------------------
+      // 'this' defines a privileged method which is public, unique to each object instance,
+      // with access to private attributes and methods
 
       // constructor code for Categorization, which runs once when the object is instantiated with 'new Categorization()'
-      if (registration === undefined) { throw new Error('new Categorization() is missing required argument: registration') }
-
-      if (util.verifyPropertiesOnRegistrationType(registration, 'fail')) {
-        _registration = registration
-      }
-
-      _addCategorizationSignifiers()
+      _constructCategorization(registration)
     }
   }
 )()
