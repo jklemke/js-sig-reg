@@ -1,5 +1,4 @@
 // Copyright 2021 Joe Klemke http://grox.com
-import { Signature } from './signature.mjs'
 import { util } from './util.mjs'
 import { DisjointAttributumSet, DisjointCopulaSet } from './disjoint.mjs'
 
@@ -86,8 +85,7 @@ const Registration = (
     // --------------------------------------------------------------------------------
       // private attributes, unique to each Registration instance
       // Registration is immutable, there are only getters and adders for these
-      let _signature = new Signature() // check that Signature object is imported properly
-      _signature = undefined // revert to uninitialized Signature object
+      let _signature
       const _thisRegistration = this
       const _generalizationChains = []
       const _disjointCopulaSets = []
