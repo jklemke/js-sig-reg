@@ -2,8 +2,8 @@
 const Signifier = (
   function () {
     return function (QName, prefLabel) {
-      let _QName = null
-      let _prefLabel = null
+      let _QName
+      let _prefLabel
       const _axiomsWithThisAsNomen = []
       const _axiomsWithThisAsCopula = []
       const _axiomsWithThisAsAttributum = []
@@ -14,15 +14,17 @@ const Signifier = (
         if (QName.indexOf(':') < 0) { throw new Error('When adding a signifier, QName must have a registered namespace prefix or use ":" in first position to indicate default namespace.') }
         if (QName.indexOf(':') !== QName.lastIndexOf(':')) { throw new Error('When adding a signifier, only one colon is allowed in QName string.') }
         if (QName.indexOf(':') === QName.length - 1) { throw new Error('When adding a signifier, at least one additional character must follow the colon in QName string.') }
-        if (!prefLabel) {
-          if (QName.indexOf(':') === 0) {
-            prefLabel = QName.substring(1)
-          } else {
-            prefLabel = QName.split(':')[1]
-          }
-        }
         _QName = QName
-        _prefLabel = prefLabel
+
+        if (prefLabel === undefined) {
+          if (QName.indexOf(':') === 0) {
+            _prefLabel = QName.substring(1)
+          } else {
+            _prefLabel = QName.split(':')[1]
+          }
+        } else {
+          _prefLabel = prefLabel
+        }
       }
 
       this.notifyOfParticipationAsNomen = function (axiom) {

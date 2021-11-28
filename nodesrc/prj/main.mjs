@@ -29,6 +29,8 @@ function exerciseSignature () {
 
   const hasTraitSig = signature.addSignifier('grox:hasTrait')
   hasTraitSig.log()
+  const t2 = signature.getSignifier('grox:hasTrait')
+  const s2 = t2.getQName()
 
   const aliceSignifier = signature.addSignifier(':alice')
   aliceSignifier.log()

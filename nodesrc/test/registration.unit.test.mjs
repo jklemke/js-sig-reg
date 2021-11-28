@@ -37,6 +37,75 @@ test('new Registration() with core Signifiers', () => {
   expect(registration.getSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE')).not.toBeUndefined()
 })
 
+test('add signifier with and without namespace', () => {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+  let nomenQName
+  let nomenPrefLabel
+
+  nomenQName = 'fox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    registration.addSignifier(nomenQName, nomenPrefLabel)
+  }).toThrow()
+
+  nomenQName = ':fox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    registration.addSignifier(nomenQName, nomenPrefLabel)
+  }).not.toThrow()
+
+  nomenQName = 'unknown:fox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    registration.addSignifier(nomenQName, nomenPrefLabel)
+  }).toThrow()
+
+  nomenQName = 'grox:fox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    registration.addSignifier(nomenQName, nomenPrefLabel)
+  }).not.toThrow()
+})
+
+test('add Axiom using core signifiers', () => {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+
+  const nomenQName = 'grox:fox'
+  const nomenPrefLabel = undefined
+  registration.addSignifier(nomenQName, nomenPrefLabel)
+
+  const attributumQName = 'grox:canine'
+  const attributumPrefLabel = undefined
+  registration.addSignifier(attributumQName, attributumPrefLabel)
+
+  const copulaPrefLabel = 'subGenWrtSuperGen'
+  const copulaQName = registration.getUniqueQNameForSignifierId(copulaPrefLabel)
+
+  expect(() => {
+    registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  }).not.toBeUndefined()
+})
+
+test('add Axiom using isSubTraitOf', () => {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+
+  const nomenQName = 'grox:XJ3h0vQrSCvcqech7CwpXHZ0'
+  const nomenPrefLabel = 'specimenWrtSpecies'
+  registration.addSignifier(nomenQName, nomenPrefLabel)
+
+  const attributumPrefLabel = 'partWrtGen'
+  const copulaPrefLabel = 'isSubTraitOf'
+  const attributumQName = registration.getUniqueQNameForSignifierId(attributumPrefLabel)
+  const copulaQName = registration.getUniqueQNameForSignifierId(copulaPrefLabel)
+
+  expect(() => {
+    registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  }).not.toBeUndefined()
+})
+
 test('new GeneralizationChain', () => {
 })
 

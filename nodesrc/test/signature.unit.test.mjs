@@ -129,3 +129,54 @@ test('count axioms with with different copulas', () => {
   expect(traitSignifier.getAxiomsWithThisAsCopula().length).toBe(3)
   expect(typeSignifier.getAxiomsWithThisAsCopula().length).toBe(4)
 })
+
+test('add signifier with and without namespace', () => {
+  const signature = new Signature()
+  let nomenQName
+  let nomenPrefLabel
+
+  nomenQName = 'fox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    signature.addSignifier(nomenQName, nomenPrefLabel)
+  }).toThrow()
+
+  nomenQName = ':fox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    signature.addSignifier(nomenQName, nomenPrefLabel)
+  }).not.toThrow()
+
+  nomenQName = 'unknown:sox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    signature.addSignifier(nomenQName, nomenPrefLabel)
+  }).toThrow()
+
+  signature.addNamespace('grox', 'http://www.grox.info/')
+  nomenQName = 'grox:sox'
+  nomenPrefLabel = undefined
+  expect(() => {
+    signature.addSignifier(nomenQName, nomenPrefLabel)
+  }).not.toThrow()
+})
+
+test('get QName from added signifier', () => {
+  const signature = new Signature()
+  let nomenQName
+  let nomenPrefLabel
+  let retrievedQName
+
+  nomenQName = ':fox'
+  nomenPrefLabel = undefined
+  signature.addSignifier(nomenQName, nomenPrefLabel)
+  retrievedQName = signature.getSignifier(nomenQName).getQName()
+  expect(retrievedQName).toEqual(nomenQName)
+
+  signature.addNamespace('grox', 'http://www.grox.info/')
+  nomenQName = 'grox:sox'
+  nomenPrefLabel = undefined
+  signature.addSignifier(nomenQName, nomenPrefLabel)
+  retrievedQName = signature.getSignifier('grox:sox').getQName()
+  expect(retrievedQName).toEqual('grox:sox')
+})

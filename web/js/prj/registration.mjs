@@ -270,8 +270,8 @@ const Registration = (
         return _signature.addNamespace(prefix, uri)
       }
 
-      this.addSignifier = function (QName, prefLabel, signifierParticipationType) {
-        return _signature.addSignifier(QName, prefLabel, signifierParticipationType)
+      this.addSignifier = function (QName, prefLabel) {
+        return _signature.addSignifier(QName, prefLabel)
       }
 
       this.getSignifier = function (signifierId) {
