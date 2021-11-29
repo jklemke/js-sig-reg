@@ -156,7 +156,7 @@ const Registration = (
         _signature.addNamespace('xsd', 'http://www.w3.org/2001/XMLmodel#')
         _signature.addNamespace('skos', 'http://www.w3.org/2004/02/skos/core#')
         _signature.addNamespace('foaf', 'http://xmlns.com/foaf/0.1/')
-        _signature.addNamespace('grox', 'http://www.grox.info/')
+        _signature.addNamespace('grox', 'http://grox.info/')
       }
 
       const _addCoreSignifiers = function () {

@@ -5,12 +5,46 @@ test('new Signature()', () => {
 })
 
 test('new Signature().addNamespace()', () => {
-  expect(new Signature().addNamespace('grox', 'http://grox.info')).not.toBeUndefined()
+  expect(new Signature().addNamespace('rdf', 'type')).not.toBeUndefined()
 })
+
+
+test('add single namespace', () => {
+  const signature = new Signature()
+  const namespaces = signature.addNamespace('grox', 'http://grox.info/')
+  expect(namespaces).not.toBeUndefined()
+  expect(namespaces.grox).toEqual('http://grox.info/')
+})
+
+test('add multiple namespaces', () => {
+  const signature = new Signature()
+  signature.addNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+  signature.addNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-model#')
+  signature.addNamespace('dc', 'http://purl.org/dc/elements/1.1/')
+  signature.addNamespace('owl', 'http://www.w3.org/2002/07/owl#')
+  signature.addNamespace('ex', 'http://www.example.org/')
+  signature.addNamespace('xsd', 'http://www.w3.org/2001/XMLmodel#')
+  signature.addNamespace('skos', 'http://www.w3.org/2004/02/skos/core#')
+  signature.addNamespace('foaf', 'http://xmlns.com/foaf/0.1/')
+  signature.addNamespace('grox', 'http://grox.info/')
+  const namespaces = signature.getNamespaces()
+  expect(namespaces).not.toBeUndefined()
+  expect(Object.keys(namespaces).length).toBe(9)
+  expect(namespaces.rdf).toEqual('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+  expect(namespaces.rdfs).toEqual('http://www.w3.org/2000/01/rdf-model#')
+  expect(namespaces.dc).toEqual('http://purl.org/dc/elements/1.1/')
+  expect(namespaces.owl).toEqual('http://www.w3.org/2002/07/owl#')
+  expect(namespaces.ex).toEqual('http://www.example.org/')
+  expect(namespaces.xsd).toEqual('http://www.w3.org/2001/XMLmodel#')
+  expect(namespaces.skos).toEqual('http://www.w3.org/2004/02/skos/core#')
+  expect(namespaces.foaf).toEqual('http://xmlns.com/foaf/0.1/')
+  expect(namespaces.grox).toEqual('http://grox.info/')
+})
+
 
 test('add multiple signifiers', () => {
   const signature = new Signature()
-  signature.addNamespace('grox', 'http://grox.info')
+  signature.addNamespace('grox', 'http://grox.info/')
 
   expect(signature.addSignifier('grox:hasTrait')).not.toBeUndefined()
   expect(signature.addSignifier(':alice')).not.toBeUndefined()
@@ -20,7 +54,7 @@ test('add multiple signifiers', () => {
 
 test('add duplicate signifier using QName and signifier object', () => {
   const signature = new Signature()
-  signature.addNamespace('grox', 'http://grox.info')
+  signature.addNamespace('grox', 'http://grox.info/')
   signature.addSignifier('grox:hasTrait')
   const carmenSignifier1 = signature.addSignifier(':carmen')
   const carmenSignifier2 = signature.getSignifier(carmenSignifier1)
@@ -30,7 +64,7 @@ test('add duplicate signifier using QName and signifier object', () => {
 
 test('add duplicate axioms using QName and signifier object', () => {
   const signature = new Signature()
-  signature.addNamespace('grox', 'http://grox.info')
+  signature.addNamespace('grox', 'http://grox.info/')
   signature.addSignifier('grox:hasTrait')
   const carmenSignifier1 = signature.addSignifier(':carmen')
   const carmenSignifier2 = signature.getSignifier(carmenSignifier1)
@@ -45,7 +79,7 @@ test('add duplicate axioms using QName and signifier object', () => {
 
 test('count axioms with different literal attributums', () => {
   const signature = new Signature()
-  signature.addNamespace('grox', 'http://grox.info')
+  signature.addNamespace('grox', 'http://grox.info/')
 
   expect(signature.addSignifier('grox:hasTrait')).not.toBeUndefined()
   expect(signature.addSignifier(':alice')).not.toBeUndefined()
@@ -69,7 +103,7 @@ test('count axioms with different literal attributums', () => {
 
 test('count axioms with with different object attributums', () => {
   const signature = new Signature()
-  signature.addNamespace('grox', 'http://grox.info')
+  signature.addNamespace('grox', 'http://grox.info/')
   signature.addNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
   const traitSignifier = signature.addSignifier('grox:hasTrait')
@@ -97,7 +131,7 @@ test('count axioms with with different object attributums', () => {
 
 test('count axioms with with different copulas', () => {
   const signature = new Signature()
-  signature.addNamespace('grox', 'http://grox.info')
+  signature.addNamespace('grox', 'http://grox.info/')
   signature.addNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
   const traitSignifier = signature.addSignifier('grox:hasTrait')
@@ -153,7 +187,7 @@ test('add signifier with and without namespace', () => {
     signature.addSignifier(nomenQName, nomenPrefLabel)
   }).toThrow()
 
-  signature.addNamespace('grox', 'http://www.grox.info/')
+  signature.addNamespace('grox', 'http://grox.info/')
   nomenQName = 'grox:sox'
   nomenPrefLabel = undefined
   expect(() => {
@@ -173,7 +207,7 @@ test('get QName from added signifier', () => {
   retrievedQName = signature.getSignifier(nomenQName).getQName()
   expect(retrievedQName).toEqual(nomenQName)
 
-  signature.addNamespace('grox', 'http://www.grox.info/')
+  signature.addNamespace('grox', 'http://grox.info/')
   nomenQName = 'grox:sox'
   nomenPrefLabel = undefined
   signature.addSignifier(nomenQName, nomenPrefLabel)

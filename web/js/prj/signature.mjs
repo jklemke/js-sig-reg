@@ -9,8 +9,27 @@ const Signature = (
   // to define the static attributes and methods, and to return the constructor function
   function () {
     // --------------------------------------------------------------------------------
-    // private static attributes (defined once and shared by all Signature objects)
-    //
+    // private static attributes and functions (defined once and shared by all Signature objects)
+    const _validateQNameForUseAsSignifier = function (QName, namespaces) {
+      if (QName === undefined) { throw new Error('Invalid QName for new signifier, ' + QName + '.') }
+      if (typeof QName !== 'string') { throw new Error('When adding a signifier, QName must be a string.') }
+      if (QName.indexOf(':') < 0) { throw new Error('When adding a signifier, QName must have a registered namespace prefix or use ":" in first position to indicate default namespace.') }
+      if (QName.indexOf(':') !== QName.lastIndexOf(':')) { throw new Error('When adding a signifier, only one colon is allowed in QName string.') }
+      if (QName.indexOf(':') === QName.length - 1) { throw new Error('When adding a signifier, at least one additional character must follow the colon in QName string.') }
+      if (QName.indexOf(':') > 0) {
+        const namespacePrefix = QName.split(':')[0]
+        if (namespaces[namespacePrefix] === undefined) { throw new Error('When adding a signifier, QName must use an existing namespace prefix. ' + QName + ' was not found.') }
+      }
+    }
+
+    const _buildPrefLabelFromQName = function (QName) {
+      if (QName.indexOf(':') === 0) {
+        return QName.substring(1)
+      } else {
+        return QName.split(':')[1]
+      }
+    }
+
 
     // the actual (anonymous) constructor function which gets invoked by new Signature()
     return function () {
@@ -34,27 +53,19 @@ const Signature = (
         if (prefix.includes(':')) { throw new Error('When adding a namespacePrefix, a colon is not allowed in the prefix name. Specified prefix was ' + prefix) }
         // TODO: shall we validate URI syntax?
         _namespaces[prefix] = URI
-        const newNamespace = prefix + ':' + URI
-        return newNamespace
+        return _namespaces
       }
 
-      const _validateQNameForUseAsSignifier = function (QName) {
-        if (QName === undefined) { throw new Error('Invalid QName for new signifier, ' + QName + '.') }
-        if (typeof QName !== 'string') { throw new Error('When adding a signifier, QName must be a string.') }
-        if (QName.indexOf(':') < 0) { throw new Error('When adding a signifier, QName must have a registered namespace prefix or use ":" in first position to indicate default namespace.') }
-        if (QName.indexOf(':') !== QName.lastIndexOf(':')) { throw new Error('When adding a signifier, only one colon is allowed in QName string.') }
-        if (QName.indexOf(':') === QName.length - 1) { throw new Error('When adding a signifier, at least one additional character must follow the colon in QName string.') }
-        if (QName.indexOf(':') > 0) {
-          const namespacePrefix = QName.split(':')[0]
-          if (_namespaces[namespacePrefix] === undefined) { throw new Error('When adding a signifier, QName must use an existing namespace prefix. ' + QName + ' was not found.') }
-        }
+      this.getNamespaces = function () {
+        return _namespaces
       }
 
       this.addSignifier = function (QName, prefLabel) {
         if (_signifiers[QName]) {
           return _signifiers[QName]
         } else {
-          _validateQNameForUseAsSignifier(QName)
+          _validateQNameForUseAsSignifier(QName, _namespaces)
+          if (prefLabel === undefined) { _buildPrefLabelFromQName(QName) }
           const newSignifier = new Signifier(QName, prefLabel)
           const newPrefLabel = newSignifier.getPrefLabel()
           const newQName = newSignifier.getQName()

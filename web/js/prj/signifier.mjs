@@ -8,25 +8,16 @@ const Signifier = (
       const _axiomsWithThisAsCopula = []
       const _axiomsWithThisAsAttributum = []
 
+      // the signifier class does not restrict signifiers by QName
+      // typically, signature class will perform validations
+      // before call new Signifier()
       const _constructSignifier = function (QName, prefLabel) {
-        if (QName === undefined) { throw new Error('Invalid QName for new signifier, ' + QName + '.') }
-        if (typeof QName !== 'string') { throw new Error('When adding a signifier, QName must be a string.') }
-        if (QName.indexOf(':') < 0) { throw new Error('When adding a signifier, QName must have a registered namespace prefix or use ":" in first position to indicate default namespace.') }
-        if (QName.indexOf(':') !== QName.lastIndexOf(':')) { throw new Error('When adding a signifier, only one colon is allowed in QName string.') }
-        if (QName.indexOf(':') === QName.length - 1) { throw new Error('When adding a signifier, at least one additional character must follow the colon in QName string.') }
         _QName = QName
-
-        if (prefLabel === undefined) {
-          if (QName.indexOf(':') === 0) {
-            _prefLabel = QName.substring(1)
-          } else {
-            _prefLabel = QName.split(':')[1]
-          }
-        } else {
-          _prefLabel = prefLabel
-        }
+        _prefLabel = prefLabel
       }
 
+      // TODO: should we have the signifier class keep track of its
+      // participation as particulariy or generality?
       this.notifyOfParticipationAsNomen = function (axiom) {
         _axiomsWithThisAsNomen.push(axiom)
         if (axiom.getCopulaLabel() !== undefined) {
