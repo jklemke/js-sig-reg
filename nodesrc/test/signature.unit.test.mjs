@@ -48,8 +48,13 @@ test('add multiple signifiers', () => {
 
   expect(signature.addSignifier('grox:hasTrait')).not.toBeUndefined()
   expect(signature.addSignifier(':alice')).not.toBeUndefined()
-  expect(signature.addSignifier(':bob')).not.toBeUndefined()
-  expect(signature.addSignifier(':carmen')).not.toBeUndefined()
+  expect(signature.getSignifier(':alice').getQName()).toEqual(':alice')
+  expect(signature.getSignifier('grox:hasTrait').getQName()).toEqual('grox:hasTrait')
+
+  const bobSignifier = signature.addSignifier(':bob')
+  const carmenSignifier = signature.addSignifier('grox:carmen')
+  expect (bobSignifier.getQName()).toEqual(':bob')
+  expect (signature.getSignifier(carmenSignifier).getQName()).toEqual('grox:carmen')
 })
 
 test('add duplicate signifier using QName and signifier object', () => {
