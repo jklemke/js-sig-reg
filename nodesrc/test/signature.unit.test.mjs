@@ -57,6 +57,21 @@ test('add multiple signifiers', () => {
   expect (signature.getSignifier(carmenSignifier).getQName()).toEqual('grox:carmen')
 })
 
+test('check signifier prefLabels', () => {
+  const signature = new Signature()
+  signature.addNamespace('grox', 'http://grox.info/')
+
+  expect(signature.addSignifier('grox:hasTrait')).not.toBeUndefined()
+  expect(signature.addSignifier(':alice')).not.toBeUndefined()
+  expect(signature.getSignifier('grox:hasTrait').getPrefLabel()).toEqual('hasTrait')
+  expect(signature.getSignifier(':alice').getPrefLabel()).toEqual('alice')
+
+  const bobSignifier = signature.addSignifier(':bob', 'Robert')
+  const carmenSignifier = signature.addSignifier('grox:carmen', 'miranda')
+  expect (bobSignifier.getPrefLabel()).toEqual('Robert')
+  expect (signature.getSignifier(carmenSignifier).getPrefLabel()).toEqual('miranda')
+})
+
 test('add duplicate signifier using QName and signifier object', () => {
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info/')

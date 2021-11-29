@@ -61,13 +61,19 @@ const Signature = (
       }
 
       this.addSignifier = function (QName, prefLabel) {
+        let newSignifier
+        let newPrefLabel
+
         if (_signifiers[QName]) {
           return _signifiers[QName]
         } else {
           _validateQNameForUseAsSignifier(QName, _namespaces)
-          if (prefLabel === undefined) { _buildPrefLabelFromQName(QName) }
-          const newSignifier = new Signifier(QName, prefLabel)
-          const newPrefLabel = newSignifier.getPrefLabel()
+          if (prefLabel === undefined) {
+            newPrefLabel = _buildPrefLabelFromQName(QName)
+          } else {
+            newPrefLabel = prefLabel
+          }
+          newSignifier = new Signifier(QName, newPrefLabel)
           const newQName = newSignifier.getQName()
           if (_prefLabels[newPrefLabel]) {
             _prefLabels[newPrefLabel][newQName] = newSignifier
@@ -76,6 +82,7 @@ const Signature = (
             _prefLabels[newPrefLabel][newQName] = newSignifier
           }
           _signifiers[newQName] = newSignifier
+
           return newSignifier
         }
       }
