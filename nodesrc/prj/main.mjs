@@ -2,14 +2,9 @@
 // node main.mjs
 // or
 // npm run main
-import { greeting } from '../../web/js/lib/hello.mjs'
 import { Signature } from '../../web/js/prj/signature.mjs'
 import { Registration } from '../../web/js/prj/registration.mjs'
 import { Categorization } from '../../web/js/prj/categorization.mjs'
-
-function exerciseGreeting () {
-  console.log(greeting('nodesrc/main.mjs'))
-}
 
 function exerciseSignature () {
   console.log('exerciseSignature ----------------------------------------')
@@ -30,7 +25,8 @@ function exerciseSignature () {
   const hasTraitSig = signature.addSignifier('grox:hasTrait')
   hasTraitSig.log()
   const t2 = signature.getSignifier('grox:hasTrait')
-  const s2 = t2.getQName()
+  const q2 = t2.getQName()
+  console.log(q2)
 
   const aliceSignifier = signature.addSignifier(':alice')
   aliceSignifier.log()
@@ -123,7 +119,6 @@ function exerciseCategorization () {
   registration.logSignifier('grox:U02oAeuYZgCvsroCSF1N49J9')
 }
 
-exerciseGreeting()
 exerciseSignature()
 exerciseRegistration()
 exerciseCategorization()
