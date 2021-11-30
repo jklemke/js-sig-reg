@@ -23,35 +23,6 @@ const Registration = (
     // --------------------------------------------------------------------------------
     // private static attributes and functions (defined once and shared by all Registration objects)
     // with no access to private attributes and functions
-    const _checkForDisjointAttributums = function (disjointAttributumSets, nomenQName, copulaQName) {
-      disjointAttributumSets.forEach((attributumSet) => {
-        const nomenCopulaPairs = disjointAttributumSets.getNomenCopulaPairs()
-        nomenCopulaPairs.forEach((nomenCopulaPair) => {
-          if (nomenCopulaPair.nomen === nomenQName && nomenCopulaPair.copula === copulaQName) {
-            let errorMsg = 'nomen ' + nomenQName + ' and copula ' + copulaQName + ' have already been assigned an attribute in disjoint set \n'
-            attributumSet.forEach((attributum) => {
-              errorMsg += '\t' + attributum + '\n'
-            })
-            throw new Error(errorMsg)
-          }
-        })
-      })
-    }
-
-    const _checkForDisjointCopulas = function (disjointCopulaSets, nomenQName, attributumQName) {
-      disjointCopulaSets.forEach((copulaSet) => {
-        const nomenAttributumPairs = disjointCopulaSets.getNomenAttributumPairs()
-        nomenAttributumPairs.forEach((nomenAttributumPair) => {
-          if (nomenAttributumPair.nomen === nomenQName && nomenAttributumPair.copula === attributumQName) {
-            let errorMsg = 'nomen ' + nomenQName + ' and attributum ' + attributumQName + ' already been assigned a copula in disjoint set \n'
-            copulaSet.forEach((copula) => {
-              errorMsg += '\t' + copula + '\n'
-            })
-            throw new Error(errorMsg)
-          }
-        })
-      })
-    }
 
     // retrieve a QName either by QName, signifier reference,
     // or by unique prefLabel, if it exists
@@ -119,7 +90,7 @@ const Registration = (
               'subGenWrtSuperGen',
               'superGenWrtSubGen',
               'subGenWrtTopDomain',
-              'topDomainWrtsubGen'
+              'topDomainWrtSubGen'
             ]
           )
         )
@@ -166,7 +137,7 @@ const Registration = (
         _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subGenWrtSuperGen')
         _validateAndAddSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf', 'superGenWrtSubGen')
         _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subGenWrtTopDomain')
-        _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'topDomainWrtsubGen')
+        _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'topDomainWrtSubGen')
 
         // the asymmetric copulas of traits
         _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'partHasTraitPart')
@@ -283,6 +254,55 @@ const Registration = (
         return _getUniqueQNameForSignifierId(signifierId, _signature)
       }
 
+      const _checkForDisjointCopulas = function (nomenQName, attributumQName) {
+        _disjointCopulaSets.forEach((copulaSet) => {
+          const nomenAttributumPairs = _disjointCopulaSets.getNomenAttributumPairs()
+          nomenAttributumPairs.forEach((nomenAttributumPair) => {
+            if (nomenAttributumPair.nomen === nomenQName && nomenAttributumPair.copula === attributumQName) {
+              let errorMsg = 'nomen ' + nomenQName + ' and attributum ' + attributumQName + ' already been assigned a copula in disjoint set \n'
+              copulaSet.forEach((copula) => {
+                errorMsg += '\t' + copula + '\n'
+              })
+              throw new Error(errorMsg)
+            }
+          })
+        })
+      }
+
+      const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet) {
+        let errorMsg =
+          '\nCannot assign attributum from disjoint set\n' +
+          '\t' + attributumQName + ' ' + _signature.getSignifier(attributumQName).getPrefLabel() + '\n' +
+          'the axiom\n' +
+          '\tnomen ' + nomenQName + ' ' + _signature.getSignifier(nomenQName).getPrefLabel() + '\n' +
+          '\tcopula ' + copulaQName + ' ' + _signature.getSignifier(copulaQName).getPrefLabel() + '\n' +
+          '\tattributum ' + axiom.attributumQName + ' ' + _signature.getSignifier(axiom.attributumQName).getPrefLabel() + '\n' +
+          'has already been added from disjoint attributum set\n'
+        const attributumSet = disjointAttributumSet.getAttributumSet()
+        for (const attributum in attributumSet) {
+          errorMsg = errorMsg + '\t' + attributum + ' ' + _signature.getSignifier(attributum).getPrefLabel() + '\n'
+        }
+        return errorMsg
+      }
+
+      const _checkForDisjointAttributums = function (nomenQName, copulaQName, attributumQName) {
+        _disjointAttributumSets.forEach((disjointAttributumSet) => {
+          const attributumSet = disjointAttributumSet.getAttributumSet()
+          for (const attributum in attributumSet) {
+            if (attributum === attributumQName) {
+              const axioms = disjointAttributumSet.getAxioms()
+              axioms.forEach((axiom) => {
+                if (axiom.nomenQName === nomenQName && axiom.copulaQName === copulaQName) {
+                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet)
+                  throw new Error(errorMsg)
+                }
+              })
+              disjointAttributumSet.addAxiom(nomenQName, copulaQName, attributumQName)
+            }
+          }
+        })
+      }
+
       // this version of addAxiom checks for attempts to add axioms with disjoint attributums
       this.addAxiom = function (nomen, copula, attributum, altCopulaLabel) {
         const nomenSignifier = _signature.getSignifier(nomen)
@@ -296,12 +316,11 @@ const Registration = (
         const copulaQName = copulaSignifier.getQName()
         const attributumQName = attributumSignifier.getQName()
 
-        const disjointAttributumSets = _getDisjointSetsforAttributum()
-        const disjointCopulaSets = _getDisjointSetsforCopula()
+        // const disjointAttributumSets = _getDisjointSetsforAttributum(attributumQName)
+        // const disjointCopulaSets = _getDisjointSetsforCopula(copulaQName)
 
-        _checkForDisjointAttributums(disjointAttributumSets, nomenQName, copulaQName)
-        _checkForDisjointCopulas(disjointCopulaSets, nomenQName, attributumQName)
-
+        _checkForDisjointAttributums(nomenQName, copulaQName, attributumQName)
+        _checkForDisjointCopulas(nomenQName, attributumQName)
         return _signature.addAxiom(nomen, copula, attributum, altCopulaLabel)
       }
 

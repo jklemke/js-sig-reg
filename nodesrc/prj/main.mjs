@@ -119,6 +119,32 @@ function exerciseCategorization () {
   registration.logSignifier('grox:U02oAeuYZgCvsroCSF1N49J9')
 }
 
+function exerciseDisjointAttributums () {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+  const nomenQName = 'grox:specimenWrtSpecies'
+  const nomenPrefLabel = undefined
+  const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+  let attributumQName
+
+  registration.addSignifier(nomenQName)
+
+  attributumQName = registration.getUniqueQNameForSignifierId('partWrtGen')
+  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+  // will error if uncommented
+  // attributumQName = registration.getUniqueQNameForSignifierId('genWrtPart')
+  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+  attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitPart')
+  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+  // will error if uncommented
+  // attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitGen')
+  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+}
+
 exerciseSignature()
 exerciseRegistration()
+exerciseDisjointAttributums()
 exerciseCategorization()

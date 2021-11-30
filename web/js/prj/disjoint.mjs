@@ -54,10 +54,7 @@ const DisjointAttributumSet = (
   function () {
     return function (registration, attributumArray) {
       const _disjointAttributums = {}
-      const _nomenCopulaPairs = [{
-        nomen: {},
-        copula: {}
-      }]
+      const _axioms = []
       let _registration
 
       const _constructDisjointAttributumSet = function (registration, attributumArray) {
@@ -81,16 +78,21 @@ const DisjointAttributumSet = (
         return _disjointAttributums
       }
 
-      this.addNomenCopulaPair = function (nomen, copula) {
+      this.addAxiom = function (nomen, copula, attributum) {
         const validatedNomen = _registration.getSignifier(nomen)
         if (!validatedNomen) { throw new Error('invalid nomen for disjointAttributumSet: ' + nomen) }
         const validatedCopula = _registration.getSignifier(copula)
         if (!validatedCopula) { throw new Error('invalid copula for disjointAttributumSet: ' + copula) }
-        _nomenCopulaPairs.push({ nomen: validatedNomen, copula: validatedCopula })
+        const validatedAttributum = _registration.getSignifier(attributum)
+        if (!validatedAttributum) { throw new Error('invalid attributum for disjointAttributumSet: ' + attributum) }
+        const nomenQName = validatedNomen.getQName()
+        const copulaQName = validatedCopula.getQName()
+        const attributumQName = validatedAttributum.getQName()
+        _axioms.push({ nomenQName: nomenQName, copulaQName: copulaQName, attributumQName })
       }
 
-      this.getNomenCopulaPairs = function () {
-        return _nomenCopulaPairs
+      this.getAxioms = function () {
+        return _axioms
       }
 
       _constructDisjointAttributumSet(registration, attributumArray)

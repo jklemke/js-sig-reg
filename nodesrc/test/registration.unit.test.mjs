@@ -15,14 +15,10 @@ test('new Registration() with Signature()', () => {
   expect(new Registration(signature)).not.toBeUndefined()
 })
 
-test('new Registration() with core Signifiers', () => {
+
+test('check that core signifiers were created', () => {
   const signature = new Signature()
   const registration = new Registration(signature)
-
-  expect(registration.getSignifier('rdf:type')).toBeUndefined()
-  expect(registration.getSignifier('grox:hasTrait')).toBeUndefined()
-  expect(registration.getSignifier('partWrtGen')).toBeUndefined()
-
   expect(registration.getSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')).not.toBeUndefined()
   expect(registration.getSignifier('grox:Fy28scb0taxYGdYeexBx3365')).not.toBeUndefined()
   expect(registration.getSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')).not.toBeUndefined()
@@ -35,6 +31,76 @@ test('new Registration() with core Signifiers', () => {
   expect(registration.getSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7')).not.toBeUndefined()
   expect(registration.getSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0')).not.toBeUndefined()
   expect(registration.getSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE')).not.toBeUndefined()
+})
+
+
+test('new Registration() with core Signifiers', () => {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+
+  expect(registration.getSignifier('rdf:type')).toBeUndefined()
+  expect(registration.getSignifier('grox:hasTrait')).toBeUndefined()
+  let testQName
+  let testPrefLabel
+  let testSignifier
+
+  // ----------------------------------------
+  testQName = 'grox:iT4tYHw9xJVf65egdT1hOtNu'
+  testPrefLabel = 'partWrtGen'
+  testSignifier = registration.getSignifier(testQName)
+  expect(registration.getSignifier(testQName)).not.toBeUndefined()
+  expect(registration.getSignifier('partWrtGen')).toBeUndefined()
+  expect(registration.getUniqueQNameForSignifierId(testPrefLabel)).not.toBeUndefined()
+  expect(
+    registration.getSignifier(testQName).getQName()
+  ).toBe(
+    registration.getUniqueQNameForSignifierId(testPrefLabel)
+  )
+  expect(
+    registration.getSignifier(testQName).getQName()
+  ).toBe(
+    registration.getUniqueQNameForSignifierId(testQName)
+  )
+  expect(
+    registration.getSignifier(testQName).getPrefLabel()
+  ).toBe(
+    'partWrtGen'
+  )
+  expect(
+    registration.getUniqueQNameForSignifierId(testSignifier)
+  ).toBe(
+    registration.getUniqueQNameForSignifierId(testPrefLabel)
+  )
+
+  // ----------------------------------------
+  testQName = 'grox:Kr7rkKhBHnxEo2OIddayrxZr'
+  testPrefLabel = 'partHasTraitPart'
+  testSignifier = registration.getSignifier(testQName)
+  expect(registration.getSignifier(testQName)).not.toBeUndefined()
+  expect(registration.getSignifier('partHasTraitPart')).toBeUndefined()
+  expect(registration.getUniqueQNameForSignifierId(testPrefLabel)).not.toBeUndefined()
+  expect(
+    registration.getSignifier(testQName).getQName()
+  ).toBe(
+    registration.getUniqueQNameForSignifierId(testPrefLabel)
+  )
+  expect(
+    registration.getSignifier(testQName).getQName()
+  ).toBe(
+    registration.getUniqueQNameForSignifierId(testQName)
+  )
+  expect(
+    registration.getSignifier(testQName).getPrefLabel()
+  ).toBe(
+    'partHasTraitPart'
+  )
+  expect(
+    registration.getUniqueQNameForSignifierId(testSignifier)
+  ).toBe(
+    registration.getUniqueQNameForSignifierId(testPrefLabel)
+  )
+
+// _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'partHasTraitPart')
 })
 
 test('add signifier with and without namespace', () => {
@@ -106,8 +172,98 @@ test('add Axiom using isSubTraitOf', () => {
   }).not.toBeUndefined()
 })
 
-test('new GeneralizationChain', () => {
+describe('attempt to add Axioms with disjoint attributums', () => {
+
+  test('disjoint attributum test', () => {
+    const signature = new Signature()
+    const nomenQName = 'grox:specimenWrtSpecies'
+    const nomenPrefLabel = undefined
+    let attributumQName
+    const registration = new Registration(signature)
+    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+    registration.addSignifier(nomenQName)
+
+    expect(() => {
+      attributumQName = registration.getUniqueQNameForSignifierId('partWrtGen')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+      attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitPart')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    }).not.toThrow()
+  })
+
+  test('disjoint attributum test', () => {
+    const signature = new Signature()
+    const nomenQName = 'grox:specimenWrtSpecies'
+    const nomenPrefLabel = undefined
+    let attributumQName
+    const registration = new Registration(signature)
+    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+    registration.addSignifier(nomenQName)
+
+    expect(() => {
+      attributumQName = registration.getUniqueQNameForSignifierId('genWrtPart')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+      attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitGen')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    }).not.toThrow()
+  })
+
+  test('disjoint attributum test', () => {
+    const signature = new Signature()
+    const nomenQName = 'grox:specimenWrtSpecies'
+    const nomenPrefLabel = undefined
+    let attributumQName
+    const registration = new Registration(signature)
+    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+    registration.addSignifier(nomenQName)
+
+    expect(() => {
+      attributumQName = registration.getUniqueQNameForSignifierId('partWrtGen')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+      attributumQName = registration.getUniqueQNameForSignifierId('genWrtPart')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    }).toThrow()
+  })
+
+  test('disjoint attributum test', () => {
+    const signature = new Signature()
+    const nomenQName = 'grox:specimenWrtSpecies'
+    const nomenPrefLabel = undefined
+    let attributumQName
+    const registration = new Registration(signature)
+    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+    registration.addSignifier(nomenQName)
+
+    expect(() => {
+      attributumQName = registration.getUniqueQNameForSignifierId('superGenWrtSubGen')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+      attributumQName = registration.getUniqueQNameForSignifierId('topDomainWrtSubGen')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    }).toThrow()
+  })
+
+  test('disjoint attributum test', () => {
+    const signature = new Signature()
+    const nomenQName = 'grox:specimenWrtSpecies'
+    const nomenPrefLabel = undefined
+    let attributumQName
+    const registration = new Registration(signature)
+    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+    registration.addSignifier(nomenQName)
+
+    expect(() => {
+      attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitPart')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+      attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitGen')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    }).toThrow()
+  })
 })
 
-test('disjoint Attributum', () => {
+test('new GeneralizationChain', () => {
 })
