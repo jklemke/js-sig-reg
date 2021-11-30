@@ -115,23 +115,132 @@ test('add signifier with and without namespace', () => {
     registration.addSignifier(nomenQName, nomenPrefLabel)
   }).toThrow()
 
-  nomenQName = ':fox'
+  nomenQName = ':wolf'
   nomenPrefLabel = undefined
   expect(() => {
     registration.addSignifier(nomenQName, nomenPrefLabel)
   }).not.toThrow()
 
-  nomenQName = 'unknown:fox'
+  nomenQName = 'unknown:dog'
   nomenPrefLabel = undefined
   expect(() => {
     registration.addSignifier(nomenQName, nomenPrefLabel)
   }).toThrow()
 
-  nomenQName = 'grox:fox'
+  nomenQName = 'grox:coyote'
   nomenPrefLabel = undefined
   expect(() => {
     registration.addSignifier(nomenQName, nomenPrefLabel)
   }).not.toThrow()
+})
+
+describe('attempt to add signifiers with duplicate prefLabels', () => {
+  test('duplicate prefLabel', () => {
+    const signature = new Signature()
+    const registration = new Registration(signature)
+    let nomenQName
+    let nomenPrefLabel
+
+    nomenQName = 'ex:fox'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = ':fox'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).toThrow()
+  })
+
+  test('duplicate prefLabel', () => {
+    const signature = new Signature()
+    const registration = new Registration(signature)
+    let nomenQName
+    let nomenPrefLabel
+
+    nomenQName = ':giraffe'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = ':giraffe'
+    nomenPrefLabel = 'hiawatha'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).toThrow()
+ 
+    nomenQName = 'grox:potato'
+    nomenPrefLabel = 'spud'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'grox:potato'
+    nomenPrefLabel = 'tater'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).toThrow()
+  })
+
+  test('duplicate prefLabel', () => {
+    const signature = new Signature()
+    const registration = new Registration(signature)
+    let nomenQName
+    let nomenPrefLabel
+
+    nomenQName = ':wolf'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'ex:wolf'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).toThrow()
+  })
+
+  test('different namespace with same prefLabel', () => {
+    const signature = new Signature()
+    const registration = new Registration(signature)
+    let nomenQName
+    let nomenPrefLabel
+
+    nomenQName = 'grox:coyote'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'ex:coyote'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).toThrow()
+  })
+
+  test('specified alternative prefLabel', () => {
+    const signature = new Signature()
+    const registration = new Registration(signature)
+    let nomenQName
+    let nomenPrefLabel
+
+    nomenQName = 'grox:rabbit'
+    nomenPrefLabel = 'bugs'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'ex:rabbit'
+    nomenPrefLabel = 'gavagai'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+  })
 })
 
 test('add Axiom using core signifiers', () => {

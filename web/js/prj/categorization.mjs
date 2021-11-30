@@ -31,21 +31,21 @@ const Categorization = (
         _addCategorizationSignifiers()
       }
 
-      const _validateAndAddCategorizationAxioms = function (QName, prefLabel, attributum) {
-        const attributumQName = _registration.getUniqueQNameForSignifierId(attributum)
-        const copulaQName = _registration.getUniqueQNameForSignifierId('isSubTraitOf')
-        _registration.addSignifier(QName, prefLabel)
-        _registration.addAxiom(QName, copulaQName, attributumQName, prefLabel)
+      const _validateAndAddCategorizationAxioms = function (nomenQName, nomenPrefLabel, copulaPrefLabel, attributumPrefLabel) {
+        const attributumQName = _registration.getUniqueQNameForSignifierId(attributumPrefLabel)
+        const copulaQName = _registration.getUniqueQNameForSignifierId(copulaPrefLabel)
+        _registration.addSignifier(nomenQName, nomenPrefLabel)
+        _registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
       }
 
       const _addCategorizationSignifiers = function () {
         // the symmetric copulas of categorization
-        _validateAndAddCategorizationAxioms('grox:XJ3h0vQrSCvcqech7CwpXHZ0', 'specimenWrtSpecies', 'partWrtGen')
-        _validateAndAddCategorizationAxioms('grox:WK0CjxWXN1z9mhoT5SSsNP2U', 'speciesWrtSpecimen', 'genWrtPart')
-        _validateAndAddCategorizationAxioms('grox:H57135RLXgbxpQdKYVI94my1', 'subSpeciesWrtSuperSpecies', 'subGenWrtSuperGen')
-        _validateAndAddCategorizationAxioms('grox:sA0oWPZh76OPzJontiufRvS5', 'superSpeciesWrtSubSpecies', 'superGenWrtSubGen')
-        _validateAndAddCategorizationAxioms('grox:xo57ra1o9uvkpd1amXFtLRZg', 'subSpeciesWrtTopDomain', 'subGenWrtTopDomain')
-        _validateAndAddCategorizationAxioms('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'topDomainWrtSubGen')
+        _validateAndAddCategorizationAxioms('grox:XJ3h0vQrSCvcqech7CwpXHZ0', 'specimenWrtSpecies', 'isSubTraitOf', 'partWrtGen')
+        _validateAndAddCategorizationAxioms('grox:WK0CjxWXN1z9mhoT5SSsNP2U', 'speciesWrtSpecimen', 'isSubTraitOf', 'genWrtPart')
+        _validateAndAddCategorizationAxioms('grox:H57135RLXgbxpQdKYVI94my1', 'subSpeciesWrtSuperSpecies', 'isSubTraitOf', 'subGenWrtSuperGen')
+        _validateAndAddCategorizationAxioms('grox:sA0oWPZh76OPzJontiufRvS5', 'superSpeciesWrtSubSpecies', 'isSubTraitOf', 'superGenWrtSubGen')
+        _validateAndAddCategorizationAxioms('grox:xo57ra1o9uvkpd1amXFtLRZg', 'subSpeciesWrtTopDomain', 'isSubTraitOf', 'subGenWrtTopDomain')
+        _validateAndAddCategorizationAxioms('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'isSubTraitOf', 'topDomainWrtSubGen')
       }
 
       // --------------------------------------------------------------------------------

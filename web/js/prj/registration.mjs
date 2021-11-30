@@ -51,6 +51,22 @@ const Registration = (
       return existingQName
     }
 
+    const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet, signature) {
+      let errorMsg =
+        '\nCannot assign attributum from disjoint set\n' +
+        '\t' + attributumQName + ' ' + signature.getSignifier(attributumQName).getPrefLabel() + '\n' +
+        'the axiom\n' +
+        '\tnomen ' + nomenQName + ' ' + signature.getSignifier(nomenQName).getPrefLabel() + '\n' +
+        '\tcopula ' + copulaQName + ' ' + signature.getSignifier(copulaQName).getPrefLabel() + '\n' +
+        '\tattributum ' + axiom.attributumQName + ' ' + signature.getSignifier(axiom.attributumQName).getPrefLabel() + '\n' +
+        'has already been added from disjoint attributum set\n'
+      const attributumSet = disjointAttributumSet.getAttributumSet()
+      for (const attributum in attributumSet) {
+        errorMsg = errorMsg + '\t' + attributum + ' ' + signature.getSignifier(attributum).getPrefLabel() + '\n'
+      }
+      return errorMsg
+    }
+
     // the actual, anonymous constructor function which gets invoked by 'new Registration()'
     return function (signature) {
     // --------------------------------------------------------------------------------
@@ -131,7 +147,7 @@ const Registration = (
       }
 
       const _addCoreSignifiers = function () {
-        // the symmetric copulas of particularization and generalization
+        // the disjoint set of symmetric copulas of particularization and generalization
         _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'partWrtGen')
         _validateAndAddSignifier('grox:Fy28scb0taxYGdYeexBx3365', 'genWrtPart')
         _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subGenWrtSuperGen')
@@ -139,60 +155,73 @@ const Registration = (
         _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subGenWrtTopDomain')
         _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'topDomainWrtSubGen')
 
-        // the asymmetric copulas of traits
+        // the disjoint set of asymmetric copulas of traits
         _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'partHasTraitPart')
         _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'partHasTraitGen')
         _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'genHasTraitPart')
         _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'genHasTraitGen')
 
-        // the symmetric copulas of situation (existence of a particular in a domain)
+        // the disjoint set of symmetric copulas of situation (existence of a particular in a domain)
         _validateAndAddSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0', 'partWrtTopDomain')
         _validateAndAddSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE', 'topDomainWrtPart')
 
-        // copulas of trait hierarchies
+        // the copula of trait hierarchies
         _validateAndAddSignifier('grox:OT7cRTTm9suVcCmdkxVXn9hx', 'isSubTraitOf')
       }
 
-      const _getDisjointSetsforAttributum = function (copula) {
-        const existingDisjointSets = []
-        for (let i = 0; i < _disjointAttributumSets.length; i++) {
-          const attributumSet = _disjointAttributumSets[i].getAttributumSet()
-          if (attributumSet[copula]) {
-            existingDisjointSets.push(attributumSet)
-            break
-          }
-        }
-        return existingDisjointSets
-      }
-
-      const _getDisjointSetsforCopula = function (copula) {
-        const existingDisjointSets = []
-        for (let i = 0; i < _disjointCopulaSets.length; i++) {
-          const copulaSet = _disjointCopulaSets[i].getCopulaSet()
-          if (copulaSet[copula]) {
-            existingDisjointSets.push(copulaSet)
-            break
-          }
-        }
-        return existingDisjointSets
-      }
-
       // Signature allows duplicate prefLabels, but
-      // here in Registration we provide a mechanism for unique prefLabels
-      const _checkForDuplicatePrefLabels = function (prefLabel) {
-        const existingSignifiersForPrefLabel = _signature.getSignifiersForPrefLabel(prefLabel)
-        if (existingSignifiersForPrefLabel) {
-          let existingQNames
-          for (const sigId in existingSignifiersForPrefLabel) {
-            existingQNames = sigId + ' '
+      // here in Registration we provide a mechanism for ensuring unique prefLabels
+      const _checkForDuplicatePrefLabels = function (QName, prefLabel) {
+        let testPrefLabel
+        const existingSignifier = _signature.getSignifier(QName)
+        if (prefLabel !== undefined) {
+          testPrefLabel = prefLabel
+        } else {
+          if (QName.indexOf(':') === 0) {
+            testPrefLabel = QName.substring(1)
+          } else {
+            testPrefLabel = QName.split(':')[1]
           }
-          throw new Error('prefLabel = ' + prefLabel + ' has already been used for QName = ' + existingQNames)
+        }
+        if (existingSignifier !== undefined) {
+          const existingPrefLabel = existingSignifier.getPrefLabel()
+          const existingQName = existingSignifier.getQName()
+          if (existingPrefLabel !== testPrefLabel) {
+            throw new Error('Cannot add signifier ' + existingQName + ' with prefLabel ' + testPrefLabel + '. It has already been added with prefLabel ' + existingPrefLabel + '.')
+          }
+        } else {
+          const existingSignifiersForPrefLabel = _signature.getSignifiersForPrefLabel(testPrefLabel)
+          if (existingSignifiersForPrefLabel) {
+            let existingQNames
+            for (const sigId in existingSignifiersForPrefLabel) {
+              existingQNames = sigId + ' '
+            }
+            throw new Error('prefLabel = ' + testPrefLabel + ' has already been used for QName = ' + existingQNames)
+          }
         }
       }
 
       const _validateAndAddSignifier = function (QName, prefLabel) {
-        _checkForDuplicatePrefLabels(prefLabel)
+        _checkForDuplicatePrefLabels(QName, prefLabel)
         _signature.addSignifier(QName, prefLabel)
+      }
+
+      const _checkForDisjointAttributums = function (nomenQName, copulaQName, attributumQName) {
+        _disjointAttributumSets.forEach((disjointAttributumSet) => {
+          const attributumSet = disjointAttributumSet.getAttributumSet()
+          for (const attributum in attributumSet) {
+            if (attributum === attributumQName) {
+              const axioms = disjointAttributumSet.getAxioms()
+              axioms.forEach((axiom) => {
+                if (axiom.nomenQName === nomenQName && axiom.copulaQName === copulaQName) {
+                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet, _signature)
+                  throw new Error(errorMsg)
+                }
+              })
+              disjointAttributumSet.addAxiom(nomenQName, copulaQName, attributumQName)
+            }
+          }
+        })
       }
 
       // _GeneralizationChain is an IIFE constructor function which is private to Registration
@@ -242,6 +271,7 @@ const Registration = (
       }
 
       this.addSignifier = function (QName, prefLabel) {
+        _checkForDuplicatePrefLabels(QName, prefLabel)
         return _signature.addSignifier(QName, prefLabel)
       }
 
@@ -254,56 +284,9 @@ const Registration = (
         return _getUniqueQNameForSignifierId(signifierId, _signature)
       }
 
-      const _checkForDisjointCopulas = function (nomenQName, attributumQName) {
-        _disjointCopulaSets.forEach((copulaSet) => {
-          const nomenAttributumPairs = _disjointCopulaSets.getNomenAttributumPairs()
-          nomenAttributumPairs.forEach((nomenAttributumPair) => {
-            if (nomenAttributumPair.nomen === nomenQName && nomenAttributumPair.copula === attributumQName) {
-              let errorMsg = 'nomen ' + nomenQName + ' and attributum ' + attributumQName + ' already been assigned a copula in disjoint set \n'
-              copulaSet.forEach((copula) => {
-                errorMsg += '\t' + copula + '\n'
-              })
-              throw new Error(errorMsg)
-            }
-          })
-        })
-      }
-
-      const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet) {
-        let errorMsg =
-          '\nCannot assign attributum from disjoint set\n' +
-          '\t' + attributumQName + ' ' + _signature.getSignifier(attributumQName).getPrefLabel() + '\n' +
-          'the axiom\n' +
-          '\tnomen ' + nomenQName + ' ' + _signature.getSignifier(nomenQName).getPrefLabel() + '\n' +
-          '\tcopula ' + copulaQName + ' ' + _signature.getSignifier(copulaQName).getPrefLabel() + '\n' +
-          '\tattributum ' + axiom.attributumQName + ' ' + _signature.getSignifier(axiom.attributumQName).getPrefLabel() + '\n' +
-          'has already been added from disjoint attributum set\n'
-        const attributumSet = disjointAttributumSet.getAttributumSet()
-        for (const attributum in attributumSet) {
-          errorMsg = errorMsg + '\t' + attributum + ' ' + _signature.getSignifier(attributum).getPrefLabel() + '\n'
-        }
-        return errorMsg
-      }
-
-      const _checkForDisjointAttributums = function (nomenQName, copulaQName, attributumQName) {
-        _disjointAttributumSets.forEach((disjointAttributumSet) => {
-          const attributumSet = disjointAttributumSet.getAttributumSet()
-          for (const attributum in attributumSet) {
-            if (attributum === attributumQName) {
-              const axioms = disjointAttributumSet.getAxioms()
-              axioms.forEach((axiom) => {
-                if (axiom.nomenQName === nomenQName && axiom.copulaQName === copulaQName) {
-                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet)
-                  throw new Error(errorMsg)
-                }
-              })
-              disjointAttributumSet.addAxiom(nomenQName, copulaQName, attributumQName)
-            }
-          }
-        })
-      }
-
-      // this version of addAxiom checks for attempts to add axioms with disjoint attributums
+      // this version of addAxiom checks for attempts to add axioms with disjoint attributums.
+      // signature.addAxiom will create signifiers if they don't exist.
+      // However, registration.addAxiom allows only already existing signifiers.
       this.addAxiom = function (nomen, copula, attributum, altCopulaLabel) {
         const nomenSignifier = _signature.getSignifier(nomen)
         if (nomenSignifier === undefined) { throw new Error('invalid nomen for new Axiom: ' + nomen) }
@@ -316,11 +299,7 @@ const Registration = (
         const copulaQName = copulaSignifier.getQName()
         const attributumQName = attributumSignifier.getQName()
 
-        // const disjointAttributumSets = _getDisjointSetsforAttributum(attributumQName)
-        // const disjointCopulaSets = _getDisjointSetsforCopula(copulaQName)
-
         _checkForDisjointAttributums(nomenQName, copulaQName, attributumQName)
-        _checkForDisjointCopulas(nomenQName, attributumQName)
         return _signature.addAxiom(nomen, copula, attributum, altCopulaLabel)
       }
 

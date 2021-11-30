@@ -27,9 +27,10 @@ test('new Categorization() with core Signifiers', () => {
   const registration = new Registration(signature)
   const categorization = new Categorization(registration)
 
-  expect(registration.getSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')).not.toBeUndefined()
   expect(registration.getSignifier('grox:XJ3h0vQrSCvcqech7CwpXHZ0')).not.toBeUndefined()
   expect(registration.getSignifier('grox:WK0CjxWXN1z9mhoT5SSsNP2U')).not.toBeUndefined()
+  expect(registration.getSignifier('grox:H57135RLXgbxpQdKYVI94my1')).not.toBeUndefined()
+  expect(registration.getSignifier('grox:sA0oWPZh76OPzJontiufRvS5')).not.toBeUndefined()
   expect(registration.getSignifier('grox:xo57ra1o9uvkpd1amXFtLRZg')).not.toBeUndefined()
   expect(registration.getSignifier('grox:U02oAeuYZgCvsroCSF1N49J9')).not.toBeUndefined()
 })
