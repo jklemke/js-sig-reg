@@ -15,7 +15,6 @@ test('new Registration() with Signature()', () => {
   expect(new Registration(signature)).not.toBeUndefined()
 })
 
-
 test('check that core signifiers were created', () => {
   const signature = new Signature()
   const registration = new Registration(signature)
@@ -32,7 +31,6 @@ test('check that core signifiers were created', () => {
   expect(registration.getSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0')).not.toBeUndefined()
   expect(registration.getSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE')).not.toBeUndefined()
 })
-
 
 test('new Registration() with core Signifiers', () => {
   const signature = new Signature()
@@ -99,8 +97,6 @@ test('new Registration() with core Signifiers', () => {
   ).toBe(
     registration.getUniqueQNameForSignifierId(testPrefLabel)
   )
-
-// _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'partHasTraitPart')
 })
 
 test('add signifier with and without namespace', () => {
@@ -183,6 +179,30 @@ describe('attempt to add signifiers with duplicate prefLabels', () => {
     expect(() => {
       registration.addSignifier(nomenQName, nomenPrefLabel)
     }).toThrow()
+
+    nomenQName = 'grox:house'
+    nomenPrefLabel = 'domicile'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'grox:house'
+    nomenPrefLabel = 'domicile'
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'grox:building'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
+
+    nomenQName = 'grox:building'
+    nomenPrefLabel = undefined
+    expect(() => {
+      registration.addSignifier(nomenQName, nomenPrefLabel)
+    }).not.toThrow()
   })
 
   test('duplicate prefLabel', () => {
