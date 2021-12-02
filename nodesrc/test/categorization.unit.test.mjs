@@ -1,25 +1,30 @@
 import { Signature } from '../../web/js/prj/signature.mjs'
 import { Registration } from '../../web/js/prj/registration.mjs'
 import { Categorization } from '../../web/js/prj/categorization.mjs'
+import { test, expect } from '@jest/globals'
 
 test('new Categorization() with Registration()', () => {
+  let categorization
+  let registration
+
   expect(() => {
-    new Categorization()
+    categorization = new Categorization()
   }).toThrow()
 
   let signature = { junk: 'bad property' }
   expect(() => {
-    new Registration(signature)
+    registration = new Registration(signature)
   }).toThrow()
 
   signature = new Signature()
-  let registration = { rubbish: 'stupid property' }
+  registration = { rubbish: 'stupid property' }
   expect(() => {
-    new Categorization(registration)
+    categorization = new Categorization(registration)
   }).toThrow()
 
   registration = new Registration(signature)
-  expect(new Categorization(registration)).not.toBeUndefined()
+  expect(categorization = new Categorization(registration)).not.toBeUndefined()
+ 
 })
 
 test('new Categorization() with core Signifiers', () => {

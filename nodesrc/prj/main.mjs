@@ -5,6 +5,7 @@
 import { Signature } from '../../web/js/prj/signature.mjs'
 import { Registration } from '../../web/js/prj/registration.mjs'
 import { Categorization } from '../../web/js/prj/categorization.mjs'
+import { AggregationChain } from '../../web/js/prj/aggregation.mjs'
 
 function exerciseSignature () {
   console.log('exerciseSignature ----------------------------------------')
@@ -91,7 +92,7 @@ function exerciseRegistration () {
 
   registration.logSignifier('rdf:type')
   registration.logSignifier('grox:hasTrait')
-  registration.logSignifier('partWrtGen')
+  registration.logSignifier('indWrtAgg')
 
   registration.logSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
   registration.logSignifier('grox:Fy28scb0taxYGdYeexBx3365')
@@ -129,22 +130,43 @@ function exerciseDisjointAttributums () {
 
   registration.addSignifier(nomenQName)
 
-  attributumQName = registration.getUniqueQNameForSignifierId('partWrtGen')
+  attributumQName = registration.getUniqueQNameForSignifierId('indWrtAgg')
   registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
-  // attributumQName = registration.getUniqueQNameForSignifierId('genWrtPart')
+  // attributumQName = registration.getUniqueQNameForSignifierId('aggWrtInd')
   // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
-  attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitPart')
+  attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitInd')
   registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
-  // attributumQName = registration.getUniqueQNameForSignifierId('partHasTraitGen')
+  // attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitAgg')
   // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+}
+
+function exerciseAggregation () {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+  const categorization = new Categorization(registration)
+
+  const indWrtAgg = registration.getSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
+  const subAggWrtSuperAgg = registration.getSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')
+  const subAggWrtDomain = registration.getSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo')
+
+  //  _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'indWrtAgg')
+  //  _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subAggWrtSuperAgg')
+  //  _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subAggWrtDomain')
+
+  let generalizationChain = new AggregationChain(indWrtAgg, subAggWrtSuperAgg)
+  generalizationChain.insertLink(subAggWrtSuperAgg, subAggWrtDomain)
+
+  generalizationChain.log()
+  generalizationChain.apply('log')
 }
 
 exerciseSignature()
 exerciseRegistration()
 exerciseDisjointAttributums()
 exerciseCategorization()
+exerciseAggregation()

@@ -1,4 +1,5 @@
 import { Signature } from '../../web/js/prj/signature.mjs'
+import { test, expect } from '@jest/globals'
 
 test('new Signature()', () => {
   expect(new Signature()).not.toBeUndefined()
@@ -7,7 +8,6 @@ test('new Signature()', () => {
 test('new Signature().addNamespace()', () => {
   expect(new Signature().addNamespace('rdf', 'type')).not.toBeUndefined()
 })
-
 
 test('add single namespace', () => {
   const signature = new Signature()
@@ -236,4 +236,3 @@ test('count axioms with with different copulas', () => {
   expect(traitSignifier.getAxiomsWithThisAsCopula().length).toBe(5)
   expect(typeSignifier.getAxiomsWithThisAsCopula().length).toBe(4)
 })
-

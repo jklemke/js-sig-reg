@@ -1,6 +1,7 @@
 // Copyright 2021 Joe Klemke http://grox.com
 import { util } from './util.mjs'
 import { DisjointAttributumSet, DisjointCopulaSet } from './disjoint.mjs'
+import { AggregationChain } from './aggregation.mjs'
 
 // this is a reference to a function, so can be used with 'new'
 // TODO: logic for these
@@ -8,7 +9,7 @@ import { DisjointAttributumSet, DisjointCopulaSet } from './disjoint.mjs'
 // specimenOfSpecies is inverse
 // species, genus, supergenus is transitive
 // instance, class, superclass is transitive
-// domain is top level aggregate for all aggregate. a situation is anything in a domain (existence)
+// domain is a top level aggregate for all aggregate. an individual or an aggregate may be situated in a domain (existence)
 // specimen, species and genus are categorization, that is they do not copy trait
 // instance, class, and superclass are classification, that is they do copy traits
 // every item in the plurality must have the prototypical traits of the prototype
@@ -67,6 +68,39 @@ const Registration = (
       return errorMsg
     }
 
+    // Signature allows duplicate prefLabels, but
+    // here in Registration we provide a mechanism for ensuring unique prefLabels
+    // at least for our core signifiers
+    const _checkForDuplicatePrefLabels = function (QName, prefLabel, signature) {
+      let testPrefLabel
+      const existingSignifier = signature.getSignifier(QName)
+      if (prefLabel !== undefined) {
+        testPrefLabel = prefLabel
+      } else {
+        if (QName.indexOf(':') === 0) {
+          testPrefLabel = QName.substring(1)
+        } else {
+          testPrefLabel = QName.split(':')[1]
+        }
+      }
+      if (existingSignifier !== undefined) {
+        const existingPrefLabel = existingSignifier.getPrefLabel()
+        const existingQName = existingSignifier.getQName()
+        if (existingPrefLabel !== testPrefLabel) {
+          throw new Error('Cannot add signifier ' + existingQName + ' with prefLabel ' + testPrefLabel + '. It has already been added with prefLabel ' + existingPrefLabel + '.')
+        }
+      } else {
+        const existingSignifiersForPrefLabel = signature.getSignifiersForPrefLabel(testPrefLabel)
+        if (existingSignifiersForPrefLabel) {
+          let existingQNames
+          for (const sigId in existingSignifiersForPrefLabel) {
+            existingQNames = sigId + ' '
+          }
+          throw new Error('prefLabel = ' + testPrefLabel + ' has already been used for QName = ' + existingQNames)
+        }
+      }
+    }
+
     // the actual, anonymous constructor function which gets invoked by 'new Registration()'
     return function (signature) {
     // --------------------------------------------------------------------------------
@@ -74,7 +108,7 @@ const Registration = (
       // Registration is immutable, there are only getters and adders for these
       let _signature
       const _thisRegistration = this
-      const _generalizationChains = []
+      const _aggregationChains = []
       const _disjointCopulaSets = []
       const _disjointAttributumSets = []
 
@@ -88,8 +122,8 @@ const Registration = (
         }
 
         // temp tests to ensure these classes can be instantiated
-        const genChain = new _GeneralizationChain()
-        _generalizationChains.push(genChain)
+        // const genChain = new GeneralizationChain()
+        // _generalizationChains.push(genChain)
 
         _addCoreNamespaces()
         _addCoreSignifiers()
@@ -101,12 +135,12 @@ const Registration = (
           new DisjointAttributumSet(
             _thisRegistration,
             [
-              'partWrtGen',
-              'genWrtPart',
-              'subGenWrtSuperGen',
-              'superGenWrtSubGen',
-              'subGenWrtTopDomain',
-              'topDomainWrtSubGen'
+              'indWrtAgg',
+              'aggWrtInd',
+              'subAggWrtSuperAgg',
+              'superAggWrtSubAgg',
+              'subAggWrtDomain',
+              'domainWrtSubAgg'
             ]
           )
         )
@@ -115,10 +149,10 @@ const Registration = (
           new DisjointAttributumSet(
             _thisRegistration,
             [
-              'partHasTraitPart',
-              'partHasTraitGen',
-              'genHasTraitPart',
-              'genHasTraitGen'
+              'indHasTraitInd',
+              'indHasTraitAgg',
+              'aggHasTraitInd',
+              'aggHasTraitAgg'
             ]
           )
         )
@@ -127,8 +161,8 @@ const Registration = (
           new DisjointAttributumSet(
             _thisRegistration,
             [
-              'partWrtTopDomain',
-              'topDomainWrtPart'
+              'indWrtDomain',
+              'domainWrtInd'
             ]
           )
         )
@@ -148,61 +182,29 @@ const Registration = (
 
       const _addCoreSignifiers = function () {
         // the disjoint set of symmetric copulas of particularization and generalization
-        _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'partWrtGen')
-        _validateAndAddSignifier('grox:Fy28scb0taxYGdYeexBx3365', 'genWrtPart')
-        _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subGenWrtSuperGen')
-        _validateAndAddSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf', 'superGenWrtSubGen')
-        _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subGenWrtTopDomain')
-        _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'topDomainWrtSubGen')
+        _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'indWrtAgg')
+        _validateAndAddSignifier('grox:Fy28scb0taxYGdYeexBx3365', 'aggWrtInd')
+        _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subAggWrtSuperAgg')
+        _validateAndAddSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf', 'superAggWrtSubAgg')
+        _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subAggWrtDomain')
+        _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'domainWrtSubAgg')
 
         // the disjoint set of asymmetric copulas of traits
-        _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'partHasTraitPart')
-        _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'partHasTraitGen')
-        _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'genHasTraitPart')
-        _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'genHasTraitGen')
+        _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'indHasTraitInd')
+        _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'indHasTraitAgg')
+        _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'aggHasTraitInd')
+        _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'aggHasTraitAgg')
 
         // the disjoint set of symmetric copulas of situation (existence of a particular in a domain)
-        _validateAndAddSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0', 'partWrtTopDomain')
-        _validateAndAddSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE', 'topDomainWrtPart')
+        _validateAndAddSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0', 'indWrtDomain')
+        _validateAndAddSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE', 'domainWrtInd')
 
         // the copula of trait hierarchies
         _validateAndAddSignifier('grox:OT7cRTTm9suVcCmdkxVXn9hx', 'isSubTraitOf')
       }
 
-      // Signature allows duplicate prefLabels, but
-      // here in Registration we provide a mechanism for ensuring unique prefLabels
-      const _checkForDuplicatePrefLabels = function (QName, prefLabel) {
-        let testPrefLabel
-        const existingSignifier = _signature.getSignifier(QName)
-        if (prefLabel !== undefined) {
-          testPrefLabel = prefLabel
-        } else {
-          if (QName.indexOf(':') === 0) {
-            testPrefLabel = QName.substring(1)
-          } else {
-            testPrefLabel = QName.split(':')[1]
-          }
-        }
-        if (existingSignifier !== undefined) {
-          const existingPrefLabel = existingSignifier.getPrefLabel()
-          const existingQName = existingSignifier.getQName()
-          if (existingPrefLabel !== testPrefLabel) {
-            throw new Error('Cannot add signifier ' + existingQName + ' with prefLabel ' + testPrefLabel + '. It has already been added with prefLabel ' + existingPrefLabel + '.')
-          }
-        } else {
-          const existingSignifiersForPrefLabel = _signature.getSignifiersForPrefLabel(testPrefLabel)
-          if (existingSignifiersForPrefLabel) {
-            let existingQNames
-            for (const sigId in existingSignifiersForPrefLabel) {
-              existingQNames = sigId + ' '
-            }
-            throw new Error('prefLabel = ' + testPrefLabel + ' has already been used for QName = ' + existingQNames)
-          }
-        }
-      }
-
       const _validateAndAddSignifier = function (QName, prefLabel) {
-        _checkForDuplicatePrefLabels(QName, prefLabel)
+        _checkForDuplicatePrefLabels(QName, prefLabel, _signature)
         _signature.addSignifier(QName, prefLabel)
       }
 
@@ -224,37 +226,6 @@ const Registration = (
         })
       }
 
-      // _GeneralizationChain is an IIFE constructor function which is private to Registration
-      // it is a linked list from bottomGen to topGen, with transitive links between top and bottom.
-      // two possible initializations:
-      //    if isTopGen
-      //      subGen becomes bottomGen, subGen and superGen form a link, topGen is null (can be set later)
-      //    if not isTopGen
-      //      subgen becomes bottomGen, subGen and superGen form a link, superGen is set as topGen, which cannot be changed
-      // copula is immutable, topGen is immutable once set.
-      // bottomGen can be changed by setting a new link
-      // new link can be inserted between an existing generalizationLink
-      const _GeneralizationChain = (
-
-        // anonymous function which returns the _GeneralizationChain constructor
-        function () {
-          return function (copula, subGen, superGen, isTopGen) {
-            // private attributes, unique to each _GeneralizationChain instance
-            // let _bottomGeneralization
-            // let _topGeneralization
-            // let _generalizationLink = {
-            //   narrowerGeneralization: null,
-            //   broaderGeneralization: null
-            // }
-
-            // private methods, unique to each _GeneralizationChain instance, with access to private attributes and methods
-            // public _GeneralizationChain methods
-
-            // _GeneralizationChain constructor code
-          }
-        }
-      )()
-
       // 'this' defines a privileged method which is public, unique to each object instance, with access to private attributes and methods
       // TODO: the basic idea is to use a Registration to manipulate a Signature
       // so Registration has a facade for the public methods of Signature
@@ -271,7 +242,7 @@ const Registration = (
       }
 
       this.addSignifier = function (QName, prefLabel) {
-        _checkForDuplicatePrefLabels(QName, prefLabel)
+        _checkForDuplicatePrefLabels(QName, prefLabel, _signature)
         return _signature.addSignifier(QName, prefLabel)
       }
 

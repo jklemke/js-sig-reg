@@ -30,7 +30,6 @@ const Signature = (
       }
     }
 
-
     // the actual (anonymous) constructor function which gets invoked by new Signature()
     return function () {
       // --------------------------------------------------------------------------------
