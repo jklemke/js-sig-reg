@@ -1,14 +1,11 @@
-// _DisjointAttributum is an IIFE constructor function which is private to Registration
-// it tracks sets of signifiers which are not allowed to be attributums of the same nomen & copula pair
+// _DisjointCopulaSet is an IIFE constructor
+// it tracks sets of signifiers which are not allowed to be copulas of the same nomen & attributum pair
 const DisjointCopulaSet = (
 
   function () {
     return function (registration, copulaArray) {
       const _disjointCopulas = {}
-      const _nomenAttributumPairs = [{
-        nomen: {},
-        attributum: {}
-      }]
+      const _axioms = []
       let _registration
 
       const _constructDisjointCopulaSet = function (registration, copulaArray) {
@@ -32,16 +29,21 @@ const DisjointCopulaSet = (
         return _disjointCopulas
       }
 
-      this.addNomenAttributumPair = function (nomen, attributum) {
+      this.addAxiom = function (nomen, copula, attributum) {
         const validatedNomen = _registration.getSignifier(nomen)
         if (!validatedNomen) { throw new Error('invalid nomen for disjointCopulaSet: ' + nomen) }
+        const validatedCopula = _registration.getSignifier(copula)
+        if (!validatedCopula) { throw new Error('invalid copula for disjointCopulaSet: ' + copula) }
         const validatedAttributum = _registration.getSignifier(attributum)
         if (!validatedAttributum) { throw new Error('invalid attributum for disjointCopulaSet: ' + attributum) }
-        _nomenAttributumPairs.push({ nomen: validatedNomen, attributum: validatedAttributum })
+        const nomenQName = validatedNomen.getQName()
+        const copulaQName = validatedCopula.getQName()
+        const attributumQName = validatedAttributum.getQName()
+        _axioms.push({ nomenQName: nomenQName, copulaQName: copulaQName, attributumQName })
       }
 
-      this.getNomenAttributumPairs = function () {
-        return _nomenAttributumPairs
+      this.getAxioms = function () {
+        return _axioms
       }
 
       _constructDisjointCopulaSet(registration, copulaArray)
@@ -49,6 +51,8 @@ const DisjointCopulaSet = (
   }
 )()
 
+// _DisjointAttributum is an IIFE constructor function
+// it tracks sets of signifiers which are not allowed to be attributums of the same nomen & copula pair
 const DisjointAttributumSet = (
 
   function () {

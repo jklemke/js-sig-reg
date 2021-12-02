@@ -127,80 +127,77 @@ const Registration = (
 
         _addCoreNamespaces()
         _addCoreSignifiers()
-        _addCoreDisjointAttributums()
       }
 
-      const _addCoreDisjointAttributums = function () {
+      const _addDisjointCopulasAndAttributums = function (disjointPrefLabelSet) {
         _disjointAttributumSets.push(
           new DisjointAttributumSet(
             _thisRegistration,
-            [
-              'indWrtAgg',
-              'aggWrtInd',
-              'subAggWrtSuperAgg',
-              'superAggWrtSubAgg',
-              'subAggWrtDomain',
-              'domainWrtSubAgg'
-            ]
+            disjointPrefLabelSet
           )
         )
-
-        _disjointAttributumSets.push(
-          new DisjointAttributumSet(
+        _disjointCopulaSets.push(
+          new DisjointCopulaSet(
             _thisRegistration,
-            [
-              'indHasTraitInd',
-              'indHasTraitAgg',
-              'aggHasTraitInd',
-              'aggHasTraitAgg'
-            ]
-          )
-        )
-
-        _disjointAttributumSets.push(
-          new DisjointAttributumSet(
-            _thisRegistration,
-            [
-              'indWrtDomain',
-              'domainWrtInd'
-            ]
+            disjointPrefLabelSet
           )
         )
       }
 
       const _addCoreNamespaces = function () {
         _signature.addNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-        _signature.addNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-model#')
+        _signature.addNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
         _signature.addNamespace('dc', 'http://purl.org/dc/elements/1.1/')
         _signature.addNamespace('owl', 'http://www.w3.org/2002/07/owl#')
         _signature.addNamespace('ex', 'http://www.example.org/')
-        _signature.addNamespace('xsd', 'http://www.w3.org/2001/XMLmodel#')
+        _signature.addNamespace('xsd', 'http://www.w3.org/2001/XMLschema#')
         _signature.addNamespace('skos', 'http://www.w3.org/2004/02/skos/core#')
         _signature.addNamespace('foaf', 'http://xmlns.com/foaf/0.1/')
         _signature.addNamespace('grox', 'http://grox.info/')
       }
 
       const _addCoreSignifiers = function () {
-        // the disjoint set of symmetric copulas of particularization and generalization
+        // the copula of trait hierarchies
+        _validateAndAddSignifier('grox:OT7cRTTm9suVcCmdkxVXn9hx', 'isSubTraitOf')
+
+        // the asymmetric signifiers of individuals and traits
+        // these are disjoint as copulas and as attributums
+        _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'indHasTraitInd')
+        _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'indHasTraitAgg')
+        _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'aggHasTraitInd')
+        _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'aggHasTraitAgg')
+        _addDisjointCopulasAndAttributums([
+          'indHasTraitInd',
+          'indHasTraitAgg',
+          'aggHasTraitInd',
+          'aggHasTraitAgg'
+        ])
+
+        // the symmetric signifiers of individuals and aggregates
+        // these are disjoint as copulas and as attributums
         _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'indWrtAgg')
         _validateAndAddSignifier('grox:Fy28scb0taxYGdYeexBx3365', 'aggWrtInd')
         _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subAggWrtSuperAgg')
         _validateAndAddSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf', 'superAggWrtSubAgg')
         _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subAggWrtDomain')
         _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'domainWrtSubAgg')
+        _addDisjointCopulasAndAttributums([
+          'indWrtAgg',
+          'aggWrtInd',
+          'subAggWrtSuperAgg',
+          'superAggWrtSubAgg',
+          'subAggWrtDomain',
+          'domainWrtSubAgg'
+        ])
 
-        // the disjoint set of asymmetric copulas of traits
-        _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'indHasTraitInd')
-        _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'indHasTraitAgg')
-        _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'aggHasTraitInd')
-        _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'aggHasTraitAgg')
-
-        // the disjoint set of symmetric copulas of situation (existence of a particular in a domain)
+        // the symmetric signifiers of individuals situated in a domain
+        // these are disjoint as copulas and as attributums
         _validateAndAddSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0', 'indWrtDomain')
         _validateAndAddSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE', 'domainWrtInd')
-
-        // the copula of trait hierarchies
-        _validateAndAddSignifier('grox:OT7cRTTm9suVcCmdkxVXn9hx', 'isSubTraitOf')
+        _addDisjointCopulasAndAttributums([
+          'indWrtDomain',
+          'domainWrtInd'
+        ])
       }
 
       const _validateAndAddSignifier = function (QName, prefLabel) {
@@ -229,14 +226,6 @@ const Registration = (
       // 'this' defines a privileged method which is public, unique to each object instance, with access to private attributes and methods
       // TODO: the basic idea is to use a Registration to manipulate a Signature
       // so Registration has a facade for the public methods of Signature
-      this.addDisjointCopulaSet = function (copulaArray) {
-        const disjointCopulaSet = new DisjointCopulaSet(copulaArray)
-        _disjointCopulaSets.push(disjointCopulaSet)
-      }
-
-      this.getDisjointAttributumSetForAttributum = function (attributum) {
-      }
-
       this.addNamespace = function (prefix, uri) {
         return _signature.addNamespace(prefix, uri)
       }
