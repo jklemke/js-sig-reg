@@ -148,17 +148,12 @@ function exerciseDisjointAttributums () {
 function exerciseAggregation () {
   const signature = new Signature()
   const registration = new Registration(signature)
-  const categorization = new Categorization(registration)
 
   const indWrtAgg = registration.getSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
   const subAggWrtSuperAgg = registration.getSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')
   const subAggWrtDomain = registration.getSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo')
 
-  //  _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'indWrtAgg')
-  //  _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subAggWrtSuperAgg')
-  //  _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subAggWrtDomain')
-
-  let generalizationChain = new AggregationChain(indWrtAgg, subAggWrtSuperAgg)
+  const generalizationChain = new AggregationChain(indWrtAgg, subAggWrtSuperAgg)
   generalizationChain.insertLink(subAggWrtSuperAgg, subAggWrtDomain)
 
   generalizationChain.log()

@@ -127,21 +127,16 @@ const Registration = (
 
         _addCoreNamespaces()
         _addCoreSignifiers()
+        _addCoreAggregationChains()
       }
 
-      const _addDisjointCopulasAndAttributums = function (disjointPrefLabelSet) {
-        _disjointAttributumSets.push(
-          new DisjointAttributumSet(
-            _thisRegistration,
-            disjointPrefLabelSet
-          )
-        )
-        _disjointCopulaSets.push(
-          new DisjointCopulaSet(
-            _thisRegistration,
-            disjointPrefLabelSet
-          )
-        )
+      const _addCoreAggregationChains = function () {
+        const indWrtAgg = _getUniqueQNameForSignifierId('indWrtAgg', _signature)
+        const subAggWrtSuperAgg = _getUniqueQNameForSignifierId('subAggWrtSuperAgg', _signature)
+        const subAggWrtDomain = _getUniqueQNameForSignifierId('subAggWrtDomain', _signature)
+        const aggregationChain = new AggregationChain(indWrtAgg, subAggWrtSuperAgg)
+        aggregationChain.insertLink(subAggWrtSuperAgg, subAggWrtDomain)
+        _aggregationChains.push(aggregationChain)
       }
 
       const _addCoreNamespaces = function () {
@@ -198,6 +193,21 @@ const Registration = (
           'indWrtDomain',
           'domainWrtInd'
         ])
+      }
+
+      const _addDisjointCopulasAndAttributums = function (disjointPrefLabelSet) {
+        _disjointAttributumSets.push(
+          new DisjointAttributumSet(
+            _thisRegistration,
+            disjointPrefLabelSet
+          )
+        )
+        _disjointCopulaSets.push(
+          new DisjointCopulaSet(
+            _thisRegistration,
+            disjointPrefLabelSet
+          )
+        )
       }
 
       const _validateAndAddSignifier = function (QName, prefLabel) {
