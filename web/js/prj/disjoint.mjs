@@ -9,6 +9,9 @@ const DisjointCopulaSet = (
       let _registration
 
       const _constructDisjointCopulaSet = function (registration, copulaArray) {
+        if (copulaArray === undefined) { throw new Error('copulaArray argument must be an defined') }
+        let spud = typeof copulaArray
+        if (!Array.isArray(copulaArray)) { throw new Error('copulaArray argument must be an array') }
         _registration = registration
         const validatedQNameArray = []
         copulaArray.forEach((signifierId) => {
@@ -62,6 +65,8 @@ const DisjointAttributumSet = (
       let _registration
 
       const _constructDisjointAttributumSet = function (registration, attributumArray) {
+        if (attributumArray === undefined) { throw new Error('attributumArray argument must be defined') }
+        if (!Array.isArray(attributumArray)) { throw new Error('attributumArray argument must be an array') }
         _registration = registration
         const validatedQNameArray = []
         attributumArray.forEach((signifierId) => {

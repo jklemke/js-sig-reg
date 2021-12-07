@@ -45,10 +45,10 @@ test('new Registration() with core Signifiers', () => {
 
   // ----------------------------------------
   testQName = 'grox:iT4tYHw9xJVf65egdT1hOtNu'
-  testPrefLabel = 'indWrtAgg'
+  testPrefLabel = 'individualWrtAggregate'
   testSignifier = registration.getSignifier(testQName)
   expect(registration.getSignifier(testQName)).not.toBeUndefined()
-  expect(registration.getSignifier('indWrtAgg')).toBeUndefined()
+  expect(registration.getSignifier('individualWrtAggregate')).toBeUndefined()
   expect(registration.getUniqueQNameForSignifierId(testPrefLabel)).not.toBeUndefined()
   expect(
     registration.getSignifier(testQName).getQName()
@@ -63,7 +63,7 @@ test('new Registration() with core Signifiers', () => {
   expect(
     registration.getSignifier(testQName).getPrefLabel()
   ).toBe(
-    'indWrtAgg'
+    'individualWrtAggregate'
   )
   expect(
     registration.getUniqueQNameForSignifierId(testSignifier)
@@ -73,10 +73,10 @@ test('new Registration() with core Signifiers', () => {
 
   // ----------------------------------------
   testQName = 'grox:Kr7rkKhBHnxEo2OIddayrxZr'
-  testPrefLabel = 'indHasTraitInd'
+  testPrefLabel = 'individualHasTraitIndividual'
   testSignifier = registration.getSignifier(testQName)
   expect(registration.getSignifier(testQName)).not.toBeUndefined()
-  expect(registration.getSignifier('indHasTraitInd')).toBeUndefined()
+  expect(registration.getSignifier('individualHasTraitIndividual')).toBeUndefined()
   expect(registration.getUniqueQNameForSignifierId(testPrefLabel)).not.toBeUndefined()
   expect(
     registration.getSignifier(testQName).getQName()
@@ -91,7 +91,7 @@ test('new Registration() with core Signifiers', () => {
   expect(
     registration.getSignifier(testQName).getPrefLabel()
   ).toBe(
-    'indHasTraitInd'
+    'individualHasTraitIndividual'
   )
   expect(
     registration.getUniqueQNameForSignifierId(testSignifier)
@@ -276,7 +276,7 @@ test('add Axiom using core signifiers', () => {
   const attributumPrefLabel = undefined
   registration.addSignifier(attributumQName, attributumPrefLabel)
 
-  const copulaPrefLabel = 'subAggWrtSuperAgg'
+  const copulaPrefLabel = 'aggregateWrtSuperAggregate'
   const copulaQName = registration.getUniqueQNameForSignifierId(copulaPrefLabel)
 
   expect(() => {
@@ -292,7 +292,7 @@ test('add Axiom using isSubTraitOf', () => {
   const nomenPrefLabel = 'specimenWrtSpecies'
   registration.addSignifier(nomenQName, nomenPrefLabel)
 
-  const attributumPrefLabel = 'indWrtAgg'
+  const attributumPrefLabel = 'individualWrtAggregate'
   const copulaPrefLabel = 'isSubTraitOf'
   const attributumQName = registration.getUniqueQNameForSignifierId(attributumPrefLabel)
   const copulaQName = registration.getUniqueQNameForSignifierId(copulaPrefLabel)
@@ -314,28 +314,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
     registration.addSignifier(nomenQName)
 
     expect(() => {
-      attributumQName = registration.getUniqueQNameForSignifierId('indWrtAgg')
+      attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
-      attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitInd')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
-    }).not.toThrow()
-  })
-
-  test('disjoint attributum test', () => {
-    const signature = new Signature()
-    const nomenQName = 'grox:specimenWrtSpecies'
-    const nomenPrefLabel = undefined
-    let attributumQName
-    const registration = new Registration(signature)
-    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
-    registration.addSignifier(nomenQName)
-
-    expect(() => {
-      attributumQName = registration.getUniqueQNameForSignifierId('aggWrtInd')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
-
-      attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitAgg')
+      attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).not.toThrow()
   })
@@ -350,10 +332,28 @@ describe('attempt to add Axioms with disjoint attributums', () => {
     registration.addSignifier(nomenQName)
 
     expect(() => {
-      attributumQName = registration.getUniqueQNameForSignifierId('indWrtAgg')
+      attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
-      attributumQName = registration.getUniqueQNameForSignifierId('aggWrtInd')
+      attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    }).not.toThrow()
+  })
+
+  test('disjoint attributum test', () => {
+    const signature = new Signature()
+    const nomenQName = 'grox:specimenWrtSpecies'
+    const nomenPrefLabel = undefined
+    let attributumQName
+    const registration = new Registration(signature)
+    const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+    registration.addSignifier(nomenQName)
+
+    expect(() => {
+      attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
+      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+      attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).toThrow()
   })
@@ -368,10 +368,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
     registration.addSignifier(nomenQName)
 
     expect(() => {
-      attributumQName = registration.getUniqueQNameForSignifierId('superAggWrtSubAgg')
+      attributumQName = registration.getUniqueQNameForSignifierId('superAggregateWrtAggregate')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
-      attributumQName = registration.getUniqueQNameForSignifierId('domainWrtSubAgg')
+      attributumQName = registration.getUniqueQNameForSignifierId('jurisdictionWrtAggregate')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).toThrow()
   })
@@ -386,10 +386,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
     registration.addSignifier(nomenQName)
 
     expect(() => {
-      attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitInd')
+      attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
-      attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitAgg')
+      attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
       registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).toThrow()
   })

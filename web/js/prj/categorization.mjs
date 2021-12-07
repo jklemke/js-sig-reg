@@ -40,12 +40,12 @@ const Categorization = (
 
       const _addCategorizationSignifiers = function () {
         // the symmetric copulas of categorization
-        _validateAndAddCategorizationAxioms('grox:XJ3h0vQrSCvcqech7CwpXHZ0', 'specimenWrtSpecies', 'isSubTraitOf', 'indWrtAgg')
-        _validateAndAddCategorizationAxioms('grox:WK0CjxWXN1z9mhoT5SSsNP2U', 'speciesWrtSpecimen', 'isSubTraitOf', 'aggWrtInd')
-        _validateAndAddCategorizationAxioms('grox:H57135RLXgbxpQdKYVI94my1', 'subSpeciesWrtSuperSpecies', 'isSubTraitOf', 'subAggWrtSuperAgg')
-        _validateAndAddCategorizationAxioms('grox:sA0oWPZh76OPzJontiufRvS5', 'superSpeciesWrtSubSpecies', 'isSubTraitOf', 'superAggWrtSubAgg')
-        _validateAndAddCategorizationAxioms('grox:xo57ra1o9uvkpd1amXFtLRZg', 'subSpeciesWrtTopDomain', 'isSubTraitOf', 'subAggWrtDomain')
-        _validateAndAddCategorizationAxioms('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'isSubTraitOf', 'domainWrtSubAgg')
+        _validateAndAddCategorizationAxioms('grox:XJ3h0vQrSCvcqech7CwpXHZ0', 'specimenWrtSpecies', 'isSubTraitOf', 'individualWrtAggregate')
+        _validateAndAddCategorizationAxioms('grox:WK0CjxWXN1z9mhoT5SSsNP2U', 'speciesWrtSpecimen', 'isSubTraitOf', 'aggregateWrtIndividual')
+        _validateAndAddCategorizationAxioms('grox:H57135RLXgbxpQdKYVI94my1', 'subSpeciesWrtSuperSpecies', 'isSubTraitOf', 'aggregateWrtSuperAggregate')
+        _validateAndAddCategorizationAxioms('grox:sA0oWPZh76OPzJontiufRvS5', 'superSpeciesWrtSubSpecies', 'isSubTraitOf', 'superAggregateWrtAggregate')
+        _validateAndAddCategorizationAxioms('grox:xo57ra1o9uvkpd1amXFtLRZg', 'subSpeciesWrtTopDomain', 'isSubTraitOf', 'aggregateWrtJurisdiction')
+        _validateAndAddCategorizationAxioms('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'isSubTraitOf', 'jurisdictionWrtAggregate')
       }
 
       // --------------------------------------------------------------------------------

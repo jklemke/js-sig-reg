@@ -2,6 +2,7 @@
 import { util } from './util.mjs'
 import { DisjointAttributumSet, DisjointCopulaSet } from './disjoint.mjs'
 import { AggregationChain } from './aggregation.mjs'
+import { SymmetricCopulaPair, AsymmetricCopulaPair } from './symmetry.mjs'
 
 // this is a reference to a function, so can be used with 'new'
 // TODO: logic for these
@@ -111,6 +112,7 @@ const Registration = (
       const _aggregationChains = []
       const _disjointCopulaSets = []
       const _disjointAttributumSets = []
+      const _symmetricCopulaSets = []
 
       // --------------------------------------------------------------------------------
       // private methods, unique to each Registration instance,
@@ -131,11 +133,11 @@ const Registration = (
       }
 
       const _addCoreAggregationChains = function () {
-        const indWrtAgg = _getUniqueQNameForSignifierId('indWrtAgg', _signature)
-        const subAggWrtSuperAgg = _getUniqueQNameForSignifierId('subAggWrtSuperAgg', _signature)
-        const subAggWrtDomain = _getUniqueQNameForSignifierId('subAggWrtDomain', _signature)
-        const aggregationChain = new AggregationChain(indWrtAgg, subAggWrtSuperAgg)
-        aggregationChain.insertLink(subAggWrtSuperAgg, subAggWrtDomain)
+        const individualWrtAggregate = _getUniqueQNameForSignifierId('individualWrtAggregate', _signature)
+        const aggregateWrtSuperAggregate = _getUniqueQNameForSignifierId('aggregateWrtSuperAggregate', _signature)
+        const aggregateWrtJurisdiction = _getUniqueQNameForSignifierId('aggregateWrtJurisdiction', _signature)
+        const aggregationChain = new AggregationChain(individualWrtAggregate, aggregateWrtSuperAggregate)
+        aggregationChain.insertLink(aggregateWrtSuperAggregate, aggregateWrtJurisdiction)
         _aggregationChains.push(aggregationChain)
       }
 
@@ -151,47 +153,89 @@ const Registration = (
         _signature.addNamespace('grox', 'http://grox.info/')
       }
 
+      const _addSymmetricCopulas = function (symmetricPrefLabelSet) {
+        _symmetricCopulaSets.push(
+          new SymmetricCopulaPair(
+            _thisRegistration,
+            symmetricPrefLabelSet
+          )
+        )
+      }
+
+      const _addAsymmetricCopulas = function (symmetricPrefLabelSet) {
+        _symmetricCopulaSets.push(
+          new AsymmetricCopulaPair(
+            _thisRegistration,
+            symmetricPrefLabelSet
+          )
+        )
+      }
+
       const _addCoreSignifiers = function () {
         // the copula of trait hierarchies
         _validateAndAddSignifier('grox:OT7cRTTm9suVcCmdkxVXn9hx', 'isSubTraitOf')
 
-        // the asymmetric signifiers of individuals and traits
-        // these are disjoint as copulas and as attributums
-        _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'indHasTraitInd')
-        _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'indHasTraitAgg')
-        _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'aggHasTraitInd')
-        _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'aggHasTraitAgg')
+        _validateAndAddSignifier('grox:Kr7rkKhBHnxEo2OIddayrxZr', 'individualHasTraitIndividual')
+        _validateAndAddSignifier('grox:SW6KX6Y8QRKPpzEoJYoAD4Ya', 'individualHasTraitAggregate')
+        _validateAndAddSignifier('grox:Ov4ItKWDuLMVUAlrbDfgBXkW', 'aggregateHasTraitIndividual')
+        _validateAndAddSignifier('grox:WW6JqN8iMmQcvwrRYxDub7N7', 'aggregateHasTraitAggregate')
         _addDisjointCopulasAndAttributums([
-          'indHasTraitInd',
-          'indHasTraitAgg',
-          'aggHasTraitInd',
-          'aggHasTraitAgg'
+          'individualHasTraitIndividual',
+          'individualHasTraitAggregate',
+          'aggregateHasTraitIndividual',
+          'aggregateHasTraitAggregate'
         ])
-
-        // the symmetric signifiers of individuals and aggregates
-        // these are disjoint as copulas and as attributums
-        _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'indWrtAgg')
-        _validateAndAddSignifier('grox:Fy28scb0taxYGdYeexBx3365', 'aggWrtInd')
-        _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'subAggWrtSuperAgg')
-        _validateAndAddSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf', 'superAggWrtSubAgg')
-        _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'subAggWrtDomain')
-        _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'domainWrtSubAgg')
+/*        _addAsymmetricCopulas([
+          'individualHasTraitIndividual',
+          'individualHasTraitAggregate',
+          'aggregateHasTraitIndividual',
+          'aggregateHasTraitAggregate'
+        ])
+        _addAsymmetricCopulas([
+          'individualHasTraitIndividual',
+          'individualHasTraitAggregate',
+          'aggregateHasTraitIndividual',
+          'aggregateHasTraitAggregate'
+        ])
+*/
+        _validateAndAddSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu', 'individualWrtAggregate')
+        _validateAndAddSignifier('grox:Fy28scb0taxYGdYeexBx3365', 'aggregateWrtIndividual')
+        _validateAndAddSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY', 'aggregateWrtSuperAggregate')
+        _validateAndAddSignifier('grox:QT64ORWiazZEsiU9k2pfhDUf', 'superAggregateWrtAggregate')
+        _validateAndAddSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo', 'aggregateWrtJurisdiction')
+        _validateAndAddSignifier('grox:Wb4bglkQ9PrEt3C7y0YCOqpA', 'jurisdictionWrtAggregate')
         _addDisjointCopulasAndAttributums([
-          'indWrtAgg',
-          'aggWrtInd',
-          'subAggWrtSuperAgg',
-          'superAggWrtSubAgg',
-          'subAggWrtDomain',
-          'domainWrtSubAgg'
+          'individualWrtAggregate',
+          'aggregateWrtIndividual',
+          'aggregateWrtSuperAggregate',
+          'superAggregateWrtAggregate',
+          'aggregateWrtJurisdiction',
+          'jurisdictionWrtAggregate'
+        ])
+        _addSymmetricCopulas([
+          'individualWrtAggregate',
+          'aggregateWrtIndividual'
+        ])
+        _addSymmetricCopulas([
+          'aggregateWrtSuperAggregate',
+          'superAggregateWrtAggregate'
+        ])
+        _addSymmetricCopulas([
+          'aggregateWrtJurisdiction',
+          'jurisdictionWrtAggregate'
         ])
 
         // the symmetric signifiers of individuals situated in a domain
         // these are disjoint as copulas and as attributums
-        _validateAndAddSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0', 'indWrtDomain')
-        _validateAndAddSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE', 'domainWrtInd')
+        _validateAndAddSignifier('grox:VW4TIqnPANbf73SKLB1pXWr0', 'individualWrtJurisdiction')
+        _validateAndAddSignifier('grox:mi1vJ1s5GHf2dD8lswGIyddE', 'jurisdictionWrtIndividual')
         _addDisjointCopulasAndAttributums([
-          'indWrtDomain',
-          'domainWrtInd'
+          'individualWrtJurisdiction',
+          'jurisdictionWrtIndividual'
+        ])
+        _addSymmetricCopulas([
+          'individualWrtJurisdiction',
+          'jurisdictionWrtIndividual'
         ])
       }
 
@@ -254,6 +298,10 @@ const Registration = (
         return _getUniqueQNameForSignifierId(signifierId, _signature)
       }
 
+      const _checkForSymmetricCopula = function (nomenQName, copulaQName, attributumQName) {
+
+      }
+
       // this version of addAxiom checks for attempts to add axioms with disjoint attributums.
       // signature.addAxiom will create signifiers if they don't exist.
       // However, registration.addAxiom allows only already existing signifiers.
@@ -270,7 +318,9 @@ const Registration = (
         const attributumQName = attributumSignifier.getQName()
 
         _checkForDisjointAttributums(nomenQName, copulaQName, attributumQName)
-        return _signature.addAxiom(nomen, copula, attributum, altCopulaLabel)
+        const newAxiom = _signature.addAxiom(nomen, copula, attributum, altCopulaLabel)
+        _checkForSymmetricCopula(nomenQName, copulaQName, attributumQName)
+        return newAxiom
       }
 
       this.getAxiomsWithLiteralAsAttributum = function (literal) {

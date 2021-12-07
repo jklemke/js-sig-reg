@@ -92,7 +92,7 @@ function exerciseRegistration () {
 
   registration.logSignifier('rdf:type')
   registration.logSignifier('grox:hasTrait')
-  registration.logSignifier('indWrtAgg')
+  registration.logSignifier('individualWrtAggregate')
 
   registration.logSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
   registration.logSignifier('grox:Fy28scb0taxYGdYeexBx3365')
@@ -130,31 +130,65 @@ function exerciseDisjointAttributums () {
 
   registration.addSignifier(nomenQName)
 
-  attributumQName = registration.getUniqueQNameForSignifierId('indWrtAgg')
+  attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
   registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
-  // attributumQName = registration.getUniqueQNameForSignifierId('aggWrtInd')
+  // attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
   // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
-  attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitInd')
+  attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
   registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
-  // attributumQName = registration.getUniqueQNameForSignifierId('indHasTraitAgg')
+  // attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
   // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 }
+
+function exerciseDisjointCopulas () {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+  const nomenQName = 'grox:specimenWrtSpecies'
+  const nomenPrefLabel = undefined
+  const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+}
+
+function exerciseSymmetricCopulas () {
+  const signature = new Signature()
+  const registration = new Registration(signature)
+  const nomenQName = 'grox:specimenWrtSpecies'
+  const nomenPrefLabel = undefined
+  const copulaQName = registration.getUniqueQNameForSignifierId('isSubTraitOf')
+  let attributumQName
+
+  registration.addSignifier(nomenQName)
+
+  attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
+  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+  // will error if uncommented
+  // attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
+  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+  attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
+  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+
+  // will error if uncommented
+  // attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
+  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+}
+
 
 function exerciseAggregation () {
   const signature = new Signature()
   const registration = new Registration(signature)
 
-  const indWrtAgg = registration.getSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
-  const subAggWrtSuperAgg = registration.getSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')
-  const subAggWrtDomain = registration.getSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo')
+  const individualWrtAggregate = registration.getSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
+  const aggregateWrtSuperAggregate = registration.getSignifier('grox:LY41ZUMrKdPh9G3w6b2rxFUY')
+  const aggregateWrtJurisdiction = registration.getSignifier('grox:QQ46Ef5vecHgr6ctohqU1pTo')
 
-  const generalizationChain = new AggregationChain(indWrtAgg, subAggWrtSuperAgg)
-  generalizationChain.insertLink(subAggWrtSuperAgg, subAggWrtDomain)
+  const generalizationChain = new AggregationChain(individualWrtAggregate, aggregateWrtSuperAggregate)
+  generalizationChain.insertLink(aggregateWrtSuperAggregate, aggregateWrtJurisdiction)
 
   generalizationChain.log()
   generalizationChain.apply('log')
@@ -163,5 +197,7 @@ function exerciseAggregation () {
 exerciseSignature()
 exerciseRegistration()
 exerciseDisjointAttributums()
+exerciseDisjointCopulas()
+exerciseSymmetricCopulas()
 exerciseCategorization()
 exerciseAggregation()

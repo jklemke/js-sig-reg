@@ -109,7 +109,7 @@ function exerciseRegistration () {
 
   registration.logSignifier('rdf:type')
   registration.logSignifier('grox:hasTrait')
-  registration.logSignifier('indWrtAgg')
+  registration.logSignifier('individualWrtAggregate')
 
   registration.logSignifier('grox:iT4tYHw9xJVf65egdT1hOtNu')
   registration.logSignifier('grox:Fy28scb0taxYGdYeexBx3365')
