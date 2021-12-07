@@ -41,47 +41,47 @@ function exerciseSignature () {
   const carmenSignifier2 = signature.getSignifier(carmenSignifier)
   carmenSignifier2.log()
 
-  signature.addAxiom(':alice', 'grox:hasTrait', 'green')
-  signature.addAxiom(bobSignifier, 'grox:hasTrait', 'green')
-  signature.addAxiom(carmenSignifier, 'grox:hasTrait', 'red')
-  signature.addAxiom(carmenSignifier2, 'grox:hasTrait', 'red')
-  signature.addAxiom(':alice', 'grox:hasTrait', ':mother')
+  signature.addAtomicStatement(':alice', 'grox:hasTrait', 'green')
+  signature.addAtomicStatement(bobSignifier, 'grox:hasTrait', 'green')
+  signature.addAtomicStatement(carmenSignifier, 'grox:hasTrait', 'red')
+  signature.addAtomicStatement(carmenSignifier2, 'grox:hasTrait', 'red')
+  signature.addAtomicStatement(':alice', 'grox:hasTrait', ':mother')
 
-  console.log('axioms with alice as nomem ----------------------------------------')
-  const aliceAxioms = aliceSignifier.getAxiomsWithThisAsNomen()
-  aliceAxioms.forEach(axiom => {
-    axiom.log()
+  console.log('AtomicStatements with alice as nomem ----------------------------------------')
+  const aliceAtomicStatements = aliceSignifier.getAtomicStatementsWithThisAsNomen()
+  aliceAtomicStatements.forEach(AtomicStatement => {
+    AtomicStatement.log()
   })
 
-  console.log('axioms with carmen as nomem ----------------------------------------')
-  const carmenAxioms = carmenSignifier.getAxiomsWithThisAsNomen()
-  carmenAxioms.forEach(axiom => {
-    axiom.log()
+  console.log('AtomicStatements with carmen as nomem ----------------------------------------')
+  const carmenAtomicStatements = carmenSignifier.getAtomicStatementsWithThisAsNomen()
+  carmenAtomicStatements.forEach(AtomicStatement => {
+    AtomicStatement.log()
   })
 
-  console.log('axioms with :mother signifier as attributum ----------------------------------------')
-  const motherAxioms = signature.getSignifier(':mother').getAxiomsWithThisAsAttributum()
-  motherAxioms.forEach(axiom => {
-    axiom.log()
+  console.log('AtomicStatements with :mother signifier as attributum ----------------------------------------')
+  const motherAtomicStatements = signature.getSignifier(':mother').getAtomicStatementsWithThisAsAttributum()
+  motherAtomicStatements.forEach(AtomicStatement => {
+    AtomicStatement.log()
   })
 
-  console.log('axioms with green literal as attributum ----------------------------------------')
-  const greenAxioms = signature.getAxiomsWithLiteralAsAttributum('green')
-  greenAxioms.forEach(axiom => {
-    axiom.log()
+  console.log('AtomicStatements with green literal as attributum ----------------------------------------')
+  const greenAtomicStatements = signature.getAtomicStatementsWithLiteralAsAttributum('green')
+  greenAtomicStatements.forEach(AtomicStatement => {
+    AtomicStatement.log()
   })
 
-  console.log('axioms with red literal as attributum ----------------------------------------')
-  // const redAxioms = signature.getAxiomsWithLiteralAsAttributum('red')
-  signature.getAxiomsWithLiteralAsAttributum('red').forEach(axiom => {
-    axiom.log()
+  console.log('AtomicStatements with red literal as attributum ----------------------------------------')
+  // const redAtomicStatements = signature.getAtomicStatementsWithLiteralAsAttributum('red')
+  signature.getAtomicStatementsWithLiteralAsAttributum('red').forEach(AtomicStatement => {
+    AtomicStatement.log()
   })
 
-  console.log('axioms with hasTrait as copula ----------------------------------------')
+  console.log('AtomicStatements with hasTrait as copula ----------------------------------------')
   const traitSignifier = signature.getSignifier('grox:hasTrait')
-  const traitAxioms = traitSignifier.getAxiomsWithThisAsCopula()
-  traitAxioms.forEach(axiom => {
-    axiom.log()
+  const traitAtomicStatements = traitSignifier.getAtomicStatementsWithThisAsCopula()
+  traitAtomicStatements.forEach(AtomicStatement => {
+    AtomicStatement.log()
   })
 }
 
@@ -131,18 +131,18 @@ function exerciseDisjointAttributums () {
   registration.addSignifier(nomenQName)
 
   attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
-  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
   // attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
-  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  // registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
-  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
   // attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
-  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  // registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 }
 
 function exerciseDisjointCopulas () {
@@ -164,18 +164,18 @@ function exerciseSymmetricCopulas () {
   registration.addSignifier(nomenQName)
 
   attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
-  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
   // attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
-  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  // registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
-  registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
   // will error if uncommented
   // attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
-  // registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+  // registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 }
 
 

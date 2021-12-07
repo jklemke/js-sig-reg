@@ -53,8 +53,8 @@ util.verifyPropertiesOnSignatureType = function (testObject, failOnError) {
     'addNamespace',
     'addSignifier',
     'getSignifier',
-    'addAxiom',
-    'getAxiomsWithLiteralAsAttributum',
+    'addAtomicStatement',
+    'getAtomicStatementsWithLiteralAsAttributum',
     'getSignifiersForPrefLabel'
   ]
   return util.verifyPropertiesOnObject(testObject, 'Signature', propertyArray, failOnError)
@@ -69,14 +69,14 @@ util.verifyPropertiesOnSignifierType = function (testObject, failOnError) {
   return util.verifyPropertiesOnObject(testObject, 'Signifier', propertyArray, failOnError)
 }
 
-util.verifyPropertiesOnAxiomType = function (testObject, failOnError) {
+util.verifyPropertiesOnAtomicStatementType = function (testObject, failOnError) {
   const propertyArray = [
     'getNomen',
     'getCopula',
     'getCopulaLabel',
     'getAttributum'
   ]
-  return util.verifyPropertiesOnObject(testObject, 'Axiom', propertyArray, failOnError)
+  return util.verifyPropertiesOnObject(testObject, 'AtomicStatement', propertyArray, failOnError)
 }
 
 util.verifyPropertiesOnRegistrationType = function (testObject, failOnError) {
@@ -84,8 +84,8 @@ util.verifyPropertiesOnRegistrationType = function (testObject, failOnError) {
     'addNamespace',
     'addSignifier',
     'getSignifier',
-    'addAxiom',
-    'getAxiomsWithLiteralAsAttributum',
+    'addAtomicStatement',
+    'getAtomicStatementsWithLiteralAsAttributum',
     'getUniqueQNameForSignifierId'
   ]
   return util.verifyPropertiesOnObject(testObject, 'Registration', propertyArray, failOnError)

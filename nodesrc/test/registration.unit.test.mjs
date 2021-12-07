@@ -264,7 +264,7 @@ describe('attempt to add signifiers with duplicate prefLabels', () => {
   })
 })
 
-test('add Axiom using core signifiers', () => {
+test('add AtomicStatement using core signifiers', () => {
   const signature = new Signature()
   const registration = new Registration(signature)
 
@@ -280,11 +280,11 @@ test('add Axiom using core signifiers', () => {
   const copulaQName = registration.getUniqueQNameForSignifierId(copulaPrefLabel)
 
   expect(() => {
-    registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
   }).not.toBeUndefined()
 })
 
-test('add Axiom using isSubTraitOf', () => {
+test('add AtomicStatement using isSubTraitOf', () => {
   const signature = new Signature()
   const registration = new Registration(signature)
 
@@ -298,11 +298,11 @@ test('add Axiom using isSubTraitOf', () => {
   const copulaQName = registration.getUniqueQNameForSignifierId(copulaPrefLabel)
 
   expect(() => {
-    registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+    registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
   }).not.toBeUndefined()
 })
 
-describe('attempt to add Axioms with disjoint attributums', () => {
+describe('attempt to add AtomicStatements with disjoint attributums', () => {
 
   test('disjoint attributum test', () => {
     const signature = new Signature()
@@ -315,10 +315,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
 
     expect(() => {
       attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
       attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).not.toThrow()
   })
 
@@ -333,10 +333,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
 
     expect(() => {
       attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
       attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).not.toThrow()
   })
 
@@ -351,10 +351,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
 
     expect(() => {
       attributumQName = registration.getUniqueQNameForSignifierId('individualWrtAggregate')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
       attributumQName = registration.getUniqueQNameForSignifierId('aggregateWrtIndividual')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).toThrow()
   })
 
@@ -369,10 +369,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
 
     expect(() => {
       attributumQName = registration.getUniqueQNameForSignifierId('superAggregateWrtAggregate')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
       attributumQName = registration.getUniqueQNameForSignifierId('jurisdictionWrtAggregate')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).toThrow()
   })
 
@@ -387,10 +387,10 @@ describe('attempt to add Axioms with disjoint attributums', () => {
 
     expect(() => {
       attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitIndividual')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
 
       attributumQName = registration.getUniqueQNameForSignifierId('individualHasTraitAggregate')
-      registration.addAxiom(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+      registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
     }).toThrow()
   })
 })

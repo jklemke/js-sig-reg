@@ -53,14 +53,14 @@ const Registration = (
       return existingQName
     }
 
-    const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet, signature) {
+    const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, AtomicStatement, disjointAttributumSet, signature) {
       let errorMsg =
         '\nCannot assign attributum from disjoint set\n' +
         '\t' + attributumQName + ' ' + signature.getSignifier(attributumQName).getPrefLabel() + '\n' +
-        'the axiom\n' +
+        'the AtomicStatement\n' +
         '\tnomen ' + nomenQName + ' ' + signature.getSignifier(nomenQName).getPrefLabel() + '\n' +
         '\tcopula ' + copulaQName + ' ' + signature.getSignifier(copulaQName).getPrefLabel() + '\n' +
-        '\tattributum ' + axiom.attributumQName + ' ' + signature.getSignifier(axiom.attributumQName).getPrefLabel() + '\n' +
+        '\tattributum ' + AtomicStatement.attributumQName + ' ' + signature.getSignifier(AtomicStatement.attributumQName).getPrefLabel() + '\n' +
         'has already been added from disjoint attributum set\n'
       const attributumSet = disjointAttributumSet.getAttributumSet()
       for (const attributum in attributumSet) {
@@ -264,14 +264,14 @@ const Registration = (
           const attributumSet = disjointAttributumSet.getAttributumSet()
           for (const attributum in attributumSet) {
             if (attributum === attributumQName) {
-              const axioms = disjointAttributumSet.getAxioms()
-              axioms.forEach((axiom) => {
-                if (axiom.nomenQName === nomenQName && axiom.copulaQName === copulaQName) {
-                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, axiom, disjointAttributumSet, _signature)
+              const AtomicStatements = disjointAttributumSet.getAtomicStatements()
+              AtomicStatements.forEach((AtomicStatement) => {
+                if (AtomicStatement.nomenQName === nomenQName && AtomicStatement.copulaQName === copulaQName) {
+                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, AtomicStatement, disjointAttributumSet, _signature)
                   throw new Error(errorMsg)
                 }
               })
-              disjointAttributumSet.addAxiom(nomenQName, copulaQName, attributumQName)
+              disjointAttributumSet.addAtomicStatement(nomenQName, copulaQName, attributumQName)
             }
           }
         })
@@ -302,29 +302,29 @@ const Registration = (
 
       }
 
-      // this version of addAxiom checks for attempts to add axioms with disjoint attributums.
-      // signature.addAxiom will create signifiers if they don't exist.
-      // However, registration.addAxiom allows only already existing signifiers.
-      this.addAxiom = function (nomen, copula, attributum, altCopulaLabel) {
+      // this version of addAtomicStatement checks for attempts to add AtomicStatements with disjoint attributums.
+      // signature.addAtomicStatement will create signifiers if they don't exist.
+      // However, registration.addAtomicStatement allows only already existing signifiers.
+      this.addAtomicStatement = function (nomen, copula, attributum, altCopulaLabel) {
         const nomenSignifier = _signature.getSignifier(nomen)
-        if (nomenSignifier === undefined) { throw new Error('invalid nomen for new Axiom: ' + nomen) }
+        if (nomenSignifier === undefined) { throw new Error('invalid nomen for new AtomicStatement: ' + nomen) }
         const copulaSignifier = _signature.getSignifier(copula)
-        if (copulaSignifier === undefined) { throw new Error('invalid copula for new Axiom: ' + copula) }
+        if (copulaSignifier === undefined) { throw new Error('invalid copula for new AtomicStatement: ' + copula) }
         const attributumSignifier = _signature.getSignifier(attributum)
-        if (attributumSignifier === undefined) { throw new Error('invalid attributum for new Axiom: ' + attributum) }
+        if (attributumSignifier === undefined) { throw new Error('invalid attributum for new AtomicStatement: ' + attributum) }
 
         const nomenQName = nomenSignifier.getQName()
         const copulaQName = copulaSignifier.getQName()
         const attributumQName = attributumSignifier.getQName()
 
         _checkForDisjointAttributums(nomenQName, copulaQName, attributumQName)
-        const newAxiom = _signature.addAxiom(nomen, copula, attributum, altCopulaLabel)
+        const newAtomicStatement = _signature.addAtomicStatement(nomen, copula, attributum, altCopulaLabel)
         _checkForSymmetricCopula(nomenQName, copulaQName, attributumQName)
-        return newAxiom
+        return newAtomicStatement
       }
 
-      this.getAxiomsWithLiteralAsAttributum = function (literal) {
-        return _signature.getAxiomsWithLiteralAsAttributum(literal)
+      this.getAtomicStatementsWithLiteralAsAttributum = function (literal) {
+        return _signature.getAtomicStatementsWithLiteralAsAttributum(literal)
       }
 
       // constructor code for Registration, which runs once when the object is instantiated with 'new Registration()'
@@ -346,37 +346,37 @@ Registration.prototype = {
       console.log('Signifier: ' + signifierId + ' is undefined')
     }
   },
-  logAxiomsWithNomen: function (signifierId) {
+  logAtomicStatementsWithNomen: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {
-      const axioms = signifier.getAxiomsWithThisAsNomen()
-      axioms.forEach(element => {
+      const AtomicStatements = signifier.getAtomicStatementsWithThisAsNomen()
+      AtomicStatements.forEach(element => {
         element.log()
       })
     }
   },
-  logAxiomsWithCopula: function (signifierId) {
+  logAtomicStatementsWithCopula: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {
-      const axioms = signifier.getAxiomsWithThisAsCopula()
-      axioms.forEach(element => {
+      const AtomicStatements = signifier.getAtomicStatementsWithThisAsCopula()
+      AtomicStatements.forEach(element => {
         element.log()
       })
     }
   },
-  logAxiomsWithSignifierAsAttributum: function (signifierId) {
+  logAtomicStatementsWithSignifierAsAttributum: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {
-      const axioms = signifier.getAxiomsWithThisAsAttributum()
-      axioms.forEach(element => {
+      const AtomicStatements = signifier.getAtomicStatementsWithThisAsAttributum()
+      AtomicStatements.forEach(element => {
         element.log()
       })
     }
   },
-  logAxiomsWithLiteralAsAttributum: function (literal) {
-    const axioms = this.getAxiomsWithLiteralAsAttributum(literal)
-    if (axioms) {
-      axioms.forEach(element => {
+  logAtomicStatementsWithLiteralAsAttributum: function (literal) {
+    const AtomicStatements = this.getAtomicStatementsWithLiteralAsAttributum(literal)
+    if (AtomicStatements) {
+      AtomicStatements.forEach(element => {
         element.log()
       })
     }

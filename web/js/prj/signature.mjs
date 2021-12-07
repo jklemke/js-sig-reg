@@ -1,9 +1,9 @@
 // Copyright 2021 Joe Klemke http://grox.com
 import { util } from './util.mjs'
-import { Axiom } from './axiom.mjs'
+import { AtomicStatement } from './statement.mjs'
 import { Signifier } from './signifier.mjs'
 
-// Signature contains an immutable basic structure of namespaces, signifiers, axioms
+// Signature contains an immutable basic structure of namespaces, signifiers, AtomicStatements
 const Signature = (
   // anonymous IIFE function that is called once after the code is parsed,
   // to define the static attributes and methods, and to return the constructor function
@@ -37,7 +37,7 @@ const Signature = (
       // Signature is immutable, there are only getter methods for these
       const _thisSignature = this
       const _namespaces = {}
-      const _axioms = []
+      const _AtomicStatements = []
       const _signifiers = {}
       const _prefLabels = {}
 
@@ -98,11 +98,11 @@ const Signature = (
         return _prefLabels[prefLabel]
       }
 
-      this.getAxiom = function (nomen, copula, attributum) {
+      this.getAtomicStatement = function (nomen, copula, attributum) {
         let existingNomen
         let existingCopula
         let existingAttributum
-        let existingAxiom
+        let existingAtomicStatement
 
         if (nomen !== undefined) {
           existingNomen = this.getSignifier(nomen)
@@ -118,45 +118,45 @@ const Signature = (
           existingCopula !== undefined &&
           existingAttributum === undefined
         ) {
-          const testAxioms = this.getAxiomsWithLiteralAsAttributum(attributum)
-          if (testAxioms !== undefined) {
-            for (let i = 0; i < testAxioms.length; i++) {
+          const testAtomicStatements = this.getAtomicStatementsWithLiteralAsAttributum(attributum)
+          if (testAtomicStatements !== undefined) {
+            for (let i = 0; i < testAtomicStatements.length; i++) {
               if (
-                testAxioms[i].getNomen().getQName() === existingNomen.getQName() &&
-                testAxioms[i].getCopula().getQName() === existingCopula.getQName()
+                testAtomicStatements[i].getNomen().getQName() === existingNomen.getQName() &&
+                testAtomicStatements[i].getCopula().getQName() === existingCopula.getQName()
               ) {
                 existingAttributum = attributum
-                existingAxiom = testAxioms[i]
+                existingAtomicStatement = testAtomicStatements[i]
                 break
               }
             }
           }
         }
-        return existingAxiom
+        return existingAtomicStatement
       }
 
-      this.addAxiom = function (nomen, copula, attributum, altCopulaLabel) {
-        const existingAxiom = this.getAxiom(nomen, copula, attributum)
-        if (existingAxiom) {
-          return existingAxiom
+      this.addAtomicStatement = function (nomen, copula, attributum, altCopulaLabel) {
+        const existingAtomicStatement = this.getAtomicStatement(nomen, copula, attributum)
+        if (existingAtomicStatement) {
+          return existingAtomicStatement
         } else {
-          const newAxiom = new Axiom(nomen, copula, attributum, altCopulaLabel, _thisSignature)
-          _axioms.push(newAxiom)
-          return newAxiom
+          const newAtomicStatement = new AtomicStatement(nomen, copula, attributum, altCopulaLabel, _thisSignature)
+          _AtomicStatements.push(newAtomicStatement)
+          return newAtomicStatement
         }
       }
 
-      // TODO: getAxioms is the beginning of a query language
-      this.getAxiomsWithLiteralAsAttributum = function (literal) {
-        const selectedAxioms = []
+      // TODO: getAtomicStatements is the beginning of a query language
+      this.getAtomicStatementsWithLiteralAsAttributum = function (literal) {
+        const selectedAtomicStatements = []
         if (typeof literal === 'string') {
-          _axioms.forEach(element => {
+          _AtomicStatements.forEach(element => {
             if (element.getAttributum() === literal) {
-              selectedAxioms.push(element)
+              selectedAtomicStatements.push(element)
             }
           })
         }
-        return selectedAxioms
+        return selectedAtomicStatements
       }
 
       // ------------------------------
