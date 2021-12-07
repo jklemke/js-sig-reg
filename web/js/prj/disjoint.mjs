@@ -5,7 +5,7 @@ const DisjointCopulaSet = (
   function () {
     return function (registration, copulaArray) {
       const _disjointCopulas = {}
-      const _AtomicStatements = []
+      const _Statements = []
       let _registration
 
       const _constructDisjointCopulaSet = function (registration, copulaArray) {
@@ -31,7 +31,7 @@ const DisjointCopulaSet = (
         return _disjointCopulas
       }
 
-      this.addAtomicStatement = function (nomen, copula, attributum) {
+      this.addStatement = function (nomen, copula, attributum) {
         const validatedNomen = _registration.getSignifier(nomen)
         if (!validatedNomen) { throw new Error('invalid nomen for disjointCopulaSet: ' + nomen) }
         const validatedCopula = _registration.getSignifier(copula)
@@ -41,11 +41,11 @@ const DisjointCopulaSet = (
         const nomenQName = validatedNomen.getQName()
         const copulaQName = validatedCopula.getQName()
         const attributumQName = validatedAttributum.getQName()
-        _AtomicStatements.push({ nomenQName: nomenQName, copulaQName: copulaQName, attributumQName })
+        _Statements.push({ nomenQName: nomenQName, copulaQName: copulaQName, attributumQName })
       }
 
-      this.getAtomicStatements = function () {
-        return _AtomicStatements
+      this.getStatements = function () {
+        return _Statements
       }
 
       _constructDisjointCopulaSet(registration, copulaArray)
@@ -60,7 +60,7 @@ const DisjointAttributumSet = (
   function () {
     return function (registration, attributumArray) {
       const _disjointAttributums = {}
-      const _AtomicStatements = []
+      const _Statements = []
       let _registration
 
       const _constructDisjointAttributumSet = function (registration, attributumArray) {
@@ -86,7 +86,7 @@ const DisjointAttributumSet = (
         return _disjointAttributums
       }
 
-      this.addAtomicStatement = function (nomen, copula, attributum) {
+      this.addStatement = function (nomen, copula, attributum) {
         const validatedNomen = _registration.getSignifier(nomen)
         if (!validatedNomen) { throw new Error('invalid nomen for disjointAttributumSet: ' + nomen) }
         const validatedCopula = _registration.getSignifier(copula)
@@ -96,11 +96,11 @@ const DisjointAttributumSet = (
         const nomenQName = validatedNomen.getQName()
         const copulaQName = validatedCopula.getQName()
         const attributumQName = validatedAttributum.getQName()
-        _AtomicStatements.push({ nomenQName: nomenQName, copulaQName: copulaQName, attributumQName })
+        _Statements.push({ nomenQName: nomenQName, copulaQName: copulaQName, attributumQName })
       }
 
-      this.getAtomicStatements = function () {
-        return _AtomicStatements
+      this.getStatements = function () {
+        return _Statements
       }
 
       _constructDisjointAttributumSet(registration, attributumArray)

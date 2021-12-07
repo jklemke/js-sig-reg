@@ -59,47 +59,47 @@ function exerciseSignature () {
   const carmenSignifier2 = signature.getSignifier(carmenSignifier)
   carmenSignifier2.log()
 
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', 'green')
-  signature.addAtomicStatement(bobSignifier, 'grox:hasTrait', 'green')
-  signature.addAtomicStatement(carmenSignifier, 'grox:hasTrait', 'red')
-  signature.addAtomicStatement(carmenSignifier2, 'grox:hasTrait', 'red')
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', ':mother')
+  signature.addStatement(':alice', 'grox:hasTrait', 'green')
+  signature.addStatement(bobSignifier, 'grox:hasTrait', 'green')
+  signature.addStatement(carmenSignifier, 'grox:hasTrait', 'red')
+  signature.addStatement(carmenSignifier2, 'grox:hasTrait', 'red')
+  signature.addStatement(':alice', 'grox:hasTrait', ':mother')
 
-  console.log('AtomicStatements with alice as nomem ----------------------------------------')
-  const aliceAtomicStatements = aliceSignifier.getAtomicStatementsWithThisAsNomen()
-  aliceAtomicStatements.forEach(AtomicStatement => {
-    AtomicStatement.log()
+  console.log('Statements with alice as nomem ----------------------------------------')
+  const aliceStatements = aliceSignifier.getStatementsWithThisAsNomen()
+  aliceStatements.forEach(Statement => {
+    Statement.log()
   })
 
-  console.log('AtomicStatements with carmen as nomem ----------------------------------------')
-  const carmenAtomicStatements = carmenSignifier.getAtomicStatementsWithThisAsNomen()
-  carmenAtomicStatements.forEach(AtomicStatement => {
-    AtomicStatement.log()
+  console.log('Statements with carmen as nomem ----------------------------------------')
+  const carmenStatements = carmenSignifier.getStatementsWithThisAsNomen()
+  carmenStatements.forEach(Statement => {
+    Statement.log()
   })
 
-  console.log('AtomicStatements with :mother signifier as attributum ----------------------------------------')
-  const motherAtomicStatements = signature.getSignifier(':mother').getAtomicStatementsWithThisAsAttributum()
-  motherAtomicStatements.forEach(AtomicStatement => {
-    AtomicStatement.log()
+  console.log('Statements with :mother signifier as attributum ----------------------------------------')
+  const motherStatements = signature.getSignifier(':mother').getStatementsWithThisAsAttributum()
+  motherStatements.forEach(Statement => {
+    Statement.log()
   })
 
-  console.log('AtomicStatements with green literal as attributum ----------------------------------------')
-  const greenAtomicStatements = signature.getAtomicStatementsWithLiteralAsAttributum('green')
-  greenAtomicStatements.forEach(AtomicStatement => {
-    AtomicStatement.log()
+  console.log('Statements with green literal as attributum ----------------------------------------')
+  const greenStatements = signature.getStatementsWithLiteralAsAttributum('green')
+  greenStatements.forEach(Statement => {
+    Statement.log()
   })
 
-  console.log('AtomicStatements with red literal as attributum ----------------------------------------')
-  // const redAtomicStatements = signature.getAtomicStatementsWithLiteralAsAttributum('red')
-  signature.getAtomicStatementsWithLiteralAsAttributum('red').forEach(AtomicStatement => {
-    AtomicStatement.log()
+  console.log('Statements with red literal as attributum ----------------------------------------')
+  // const redStatements = signature.getStatementsWithLiteralAsAttributum('red')
+  signature.getStatementsWithLiteralAsAttributum('red').forEach(Statement => {
+    Statement.log()
   })
 
-  console.log('AtomicStatements with hasTrait as copula ----------------------------------------')
+  console.log('Statements with hasTrait as copula ----------------------------------------')
   const traitSignifier = signature.getSignifier('grox:hasTrait')
-  const traitAtomicStatements = traitSignifier.getAtomicStatementsWithThisAsCopula()
-  traitAtomicStatements.forEach(AtomicStatement => {
-    AtomicStatement.log()
+  const traitStatements = traitSignifier.getStatementsWithThisAsCopula()
+  traitStatements.forEach(Statement => {
+    Statement.log()
   })
 }
 

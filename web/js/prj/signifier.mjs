@@ -4,9 +4,9 @@ const Signifier = (
     return function (QName, prefLabel) {
       let _QName
       let _prefLabel
-      const _AtomicStatementsWithThisAsNomen = []
-      const _AtomicStatementsWithThisAsCopula = []
-      const _AtomicStatementsWithThisAsAttributum = []
+      const _StatementsWithThisAsNomen = []
+      const _StatementsWithThisAsCopula = []
+      const _StatementsWithThisAsAttributum = []
 
       // the signifier class does not restrict signifiers by QName
       // typically, signature class will perform validations
@@ -18,19 +18,19 @@ const Signifier = (
 
       // TODO: should we have the signifier class keep track of its
       // participation as particulariy or generality?
-      this.notifyOfParticipationAsNomen = function (AtomicStatement) {
-        _AtomicStatementsWithThisAsNomen.push(AtomicStatement)
-        if (AtomicStatement.getCopulaLabel() !== undefined) {
-          this[AtomicStatement.getCopulaLabel()] = AtomicStatement.getAttributum()
+      this.notifyOfParticipationAsNomen = function (Statement) {
+        _StatementsWithThisAsNomen.push(Statement)
+        if (Statement.getCopulaLabel() !== undefined) {
+          this[Statement.getCopulaLabel()] = Statement.getAttributum()
         }
       }
 
-      this.notifyOfParticipationAsCopula = function (AtomicStatement) {
-        _AtomicStatementsWithThisAsCopula.push(AtomicStatement)
+      this.notifyOfParticipationAsCopula = function (Statement) {
+        _StatementsWithThisAsCopula.push(Statement)
       }
 
-      this.notifyOfParticipationAsAttributum = function (AtomicStatement) {
-        _AtomicStatementsWithThisAsAttributum.push(AtomicStatement)
+      this.notifyOfParticipationAsAttributum = function (Statement) {
+        _StatementsWithThisAsAttributum.push(Statement)
       }
 
       this.getQName = function () {
@@ -42,17 +42,17 @@ const Signifier = (
       }
 
       // TODO: these get statements are the beginning of a SELECT API
-      // there may be multiple theorems for a single AtomicStatement/triple
-      this.getAtomicStatementsWithThisAsNomen = function () {
-        return _AtomicStatementsWithThisAsNomen
+      // there may be multiple theorems for a single Statement/triple
+      this.getStatementsWithThisAsNomen = function () {
+        return _StatementsWithThisAsNomen
       }
 
-      this.getAtomicStatementsWithThisAsCopula = function () {
-        return _AtomicStatementsWithThisAsCopula
+      this.getStatementsWithThisAsCopula = function () {
+        return _StatementsWithThisAsCopula
       }
 
-      this.getAtomicStatementsWithThisAsAttributum = function () {
-        return _AtomicStatementsWithThisAsAttributum
+      this.getStatementsWithThisAsAttributum = function () {
+        return _StatementsWithThisAsAttributum
       }
 
       _constructSignifier(QName, prefLabel)

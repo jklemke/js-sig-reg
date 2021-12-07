@@ -1,9 +1,9 @@
 // Copyright 2021 Joe Klemke http://grox.com
 import { util } from './util.mjs'
-import { AtomicStatement } from './statement.mjs'
+import { Statement } from './statement.mjs'
 import { Signifier } from './signifier.mjs'
 
-// Signature contains an immutable basic structure of namespaces, signifiers, AtomicStatements
+// Signature contains an immutable basic structure of namespaces, signifiers, Statements
 const Signature = (
   // anonymous IIFE function that is called once after the code is parsed,
   // to define the static attributes and methods, and to return the constructor function
@@ -37,7 +37,7 @@ const Signature = (
       // Signature is immutable, there are only getter methods for these
       const _thisSignature = this
       const _namespaces = {}
-      const _AtomicStatements = []
+      const _Statements = []
       const _signifiers = {}
       const _prefLabels = {}
 
@@ -98,11 +98,11 @@ const Signature = (
         return _prefLabels[prefLabel]
       }
 
-      this.getAtomicStatement = function (nomen, copula, attributum) {
+      this.getStatement = function (nomen, copula, attributum) {
         let existingNomen
         let existingCopula
         let existingAttributum
-        let existingAtomicStatement
+        let existingStatement
 
         if (nomen !== undefined) {
           existingNomen = this.getSignifier(nomen)
@@ -118,45 +118,45 @@ const Signature = (
           existingCopula !== undefined &&
           existingAttributum === undefined
         ) {
-          const testAtomicStatements = this.getAtomicStatementsWithLiteralAsAttributum(attributum)
-          if (testAtomicStatements !== undefined) {
-            for (let i = 0; i < testAtomicStatements.length; i++) {
+          const testStatements = this.getStatementsWithLiteralAsAttributum(attributum)
+          if (testStatements !== undefined) {
+            for (let i = 0; i < testStatements.length; i++) {
               if (
-                testAtomicStatements[i].getNomen().getQName() === existingNomen.getQName() &&
-                testAtomicStatements[i].getCopula().getQName() === existingCopula.getQName()
+                testStatements[i].getNomen().getQName() === existingNomen.getQName() &&
+                testStatements[i].getCopula().getQName() === existingCopula.getQName()
               ) {
                 existingAttributum = attributum
-                existingAtomicStatement = testAtomicStatements[i]
+                existingStatement = testStatements[i]
                 break
               }
             }
           }
         }
-        return existingAtomicStatement
+        return existingStatement
       }
 
-      this.addAtomicStatement = function (nomen, copula, attributum, altCopulaLabel) {
-        const existingAtomicStatement = this.getAtomicStatement(nomen, copula, attributum)
-        if (existingAtomicStatement) {
-          return existingAtomicStatement
+      this.addStatement = function (nomen, copula, attributum, altCopulaLabel) {
+        const existingStatement = this.getStatement(nomen, copula, attributum)
+        if (existingStatement) {
+          return existingStatement
         } else {
-          const newAtomicStatement = new AtomicStatement(nomen, copula, attributum, altCopulaLabel, _thisSignature)
-          _AtomicStatements.push(newAtomicStatement)
-          return newAtomicStatement
+          const newStatement = new Statement(nomen, copula, attributum, altCopulaLabel, _thisSignature)
+          _Statements.push(newStatement)
+          return newStatement
         }
       }
 
-      // TODO: getAtomicStatements is the beginning of a query language
-      this.getAtomicStatementsWithLiteralAsAttributum = function (literal) {
-        const selectedAtomicStatements = []
+      // TODO: getStatements is the beginning of a query language
+      this.getStatementsWithLiteralAsAttributum = function (literal) {
+        const selectedStatements = []
         if (typeof literal === 'string') {
-          _AtomicStatements.forEach(element => {
+          _Statements.forEach(element => {
             if (element.getAttributum() === literal) {
-              selectedAtomicStatements.push(element)
+              selectedStatements.push(element)
             }
           })
         }
-        return selectedAtomicStatements
+        return selectedStatements
       }
 
       // ------------------------------

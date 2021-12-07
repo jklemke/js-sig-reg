@@ -53,14 +53,14 @@ const Registration = (
       return existingQName
     }
 
-    const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, AtomicStatement, disjointAttributumSet, signature) {
+    const _buildDisjointAttributumErrorMsg = function (nomenQName, copulaQName, attributumQName, Statement, disjointAttributumSet, signature) {
       let errorMsg =
         '\nCannot assign attributum from disjoint set\n' +
         '\t' + attributumQName + ' ' + signature.getSignifier(attributumQName).getPrefLabel() + '\n' +
-        'the AtomicStatement\n' +
+        'the Statement\n' +
         '\tnomen ' + nomenQName + ' ' + signature.getSignifier(nomenQName).getPrefLabel() + '\n' +
         '\tcopula ' + copulaQName + ' ' + signature.getSignifier(copulaQName).getPrefLabel() + '\n' +
-        '\tattributum ' + AtomicStatement.attributumQName + ' ' + signature.getSignifier(AtomicStatement.attributumQName).getPrefLabel() + '\n' +
+        '\tattributum ' + Statement.attributumQName + ' ' + signature.getSignifier(Statement.attributumQName).getPrefLabel() + '\n' +
         'has already been added from disjoint attributum set\n'
       const attributumSet = disjointAttributumSet.getAttributumSet()
       for (const attributum in attributumSet) {
@@ -264,14 +264,14 @@ const Registration = (
           const attributumSet = disjointAttributumSet.getAttributumSet()
           for (const attributum in attributumSet) {
             if (attributum === attributumQName) {
-              const AtomicStatements = disjointAttributumSet.getAtomicStatements()
-              AtomicStatements.forEach((AtomicStatement) => {
-                if (AtomicStatement.nomenQName === nomenQName && AtomicStatement.copulaQName === copulaQName) {
-                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, AtomicStatement, disjointAttributumSet, _signature)
+              const Statements = disjointAttributumSet.getStatements()
+              Statements.forEach((Statement) => {
+                if (Statement.nomenQName === nomenQName && Statement.copulaQName === copulaQName) {
+                  const errorMsg = _buildDisjointAttributumErrorMsg(nomenQName, copulaQName, attributumQName, Statement, disjointAttributumSet, _signature)
                   throw new Error(errorMsg)
                 }
               })
-              disjointAttributumSet.addAtomicStatement(nomenQName, copulaQName, attributumQName)
+              disjointAttributumSet.addStatement(nomenQName, copulaQName, attributumQName)
             }
           }
         })
@@ -302,29 +302,29 @@ const Registration = (
 
       }
 
-      // this version of addAtomicStatement checks for attempts to add AtomicStatements with disjoint attributums.
-      // signature.addAtomicStatement will create signifiers if they don't exist.
-      // However, registration.addAtomicStatement allows only already existing signifiers.
-      this.addAtomicStatement = function (nomen, copula, attributum, altCopulaLabel) {
+      // this version of addStatement checks for attempts to add Statements with disjoint attributums.
+      // signature.addStatement will create signifiers if they don't exist.
+      // However, registration.addStatement allows only already existing signifiers.
+      this.addStatement = function (nomen, copula, attributum, altCopulaLabel) {
         const nomenSignifier = _signature.getSignifier(nomen)
-        if (nomenSignifier === undefined) { throw new Error('invalid nomen for new AtomicStatement: ' + nomen) }
+        if (nomenSignifier === undefined) { throw new Error('invalid nomen for new Statement: ' + nomen) }
         const copulaSignifier = _signature.getSignifier(copula)
-        if (copulaSignifier === undefined) { throw new Error('invalid copula for new AtomicStatement: ' + copula) }
+        if (copulaSignifier === undefined) { throw new Error('invalid copula for new Statement: ' + copula) }
         const attributumSignifier = _signature.getSignifier(attributum)
-        if (attributumSignifier === undefined) { throw new Error('invalid attributum for new AtomicStatement: ' + attributum) }
+        if (attributumSignifier === undefined) { throw new Error('invalid attributum for new Statement: ' + attributum) }
 
         const nomenQName = nomenSignifier.getQName()
         const copulaQName = copulaSignifier.getQName()
         const attributumQName = attributumSignifier.getQName()
 
         _checkForDisjointAttributums(nomenQName, copulaQName, attributumQName)
-        const newAtomicStatement = _signature.addAtomicStatement(nomen, copula, attributum, altCopulaLabel)
+        const newStatement = _signature.addStatement(nomen, copula, attributum, altCopulaLabel)
         _checkForSymmetricCopula(nomenQName, copulaQName, attributumQName)
-        return newAtomicStatement
+        return newStatement
       }
 
-      this.getAtomicStatementsWithLiteralAsAttributum = function (literal) {
-        return _signature.getAtomicStatementsWithLiteralAsAttributum(literal)
+      this.getStatementsWithLiteralAsAttributum = function (literal) {
+        return _signature.getStatementsWithLiteralAsAttributum(literal)
       }
 
       // constructor code for Registration, which runs once when the object is instantiated with 'new Registration()'
@@ -346,37 +346,37 @@ Registration.prototype = {
       console.log('Signifier: ' + signifierId + ' is undefined')
     }
   },
-  logAtomicStatementsWithNomen: function (signifierId) {
+  logStatementsWithNomen: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {
-      const AtomicStatements = signifier.getAtomicStatementsWithThisAsNomen()
-      AtomicStatements.forEach(element => {
+      const Statements = signifier.getStatementsWithThisAsNomen()
+      Statements.forEach(element => {
         element.log()
       })
     }
   },
-  logAtomicStatementsWithCopula: function (signifierId) {
+  logStatementsWithCopula: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {
-      const AtomicStatements = signifier.getAtomicStatementsWithThisAsCopula()
-      AtomicStatements.forEach(element => {
+      const Statements = signifier.getStatementsWithThisAsCopula()
+      Statements.forEach(element => {
         element.log()
       })
     }
   },
-  logAtomicStatementsWithSignifierAsAttributum: function (signifierId) {
+  logStatementsWithSignifierAsAttributum: function (signifierId) {
     const signifier = this.getSignifier(signifierId)
     if (signifier) {
-      const AtomicStatements = signifier.getAtomicStatementsWithThisAsAttributum()
-      AtomicStatements.forEach(element => {
+      const Statements = signifier.getStatementsWithThisAsAttributum()
+      Statements.forEach(element => {
         element.log()
       })
     }
   },
-  logAtomicStatementsWithLiteralAsAttributum: function (literal) {
-    const AtomicStatements = this.getAtomicStatementsWithLiteralAsAttributum(literal)
-    if (AtomicStatements) {
-      AtomicStatements.forEach(element => {
+  logStatementsWithLiteralAsAttributum: function (literal) {
+    const Statements = this.getStatementsWithLiteralAsAttributum(literal)
+    if (Statements) {
+      Statements.forEach(element => {
         element.log()
       })
     }

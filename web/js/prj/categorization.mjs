@@ -31,21 +31,21 @@ const Categorization = (
         _addCategorizationSignifiers()
       }
 
-      const _validateAndAddCategorizationAtomicStatements = function (nomenQName, nomenPrefLabel, copulaPrefLabel, attributumPrefLabel) {
+      const _validateAndAddCategorizationStatements = function (nomenQName, nomenPrefLabel, copulaPrefLabel, attributumPrefLabel) {
         const attributumQName = _registration.getUniqueQNameForSignifierId(attributumPrefLabel)
         const copulaQName = _registration.getUniqueQNameForSignifierId(copulaPrefLabel)
         _registration.addSignifier(nomenQName, nomenPrefLabel)
-        _registration.addAtomicStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
+        _registration.addStatement(nomenQName, copulaQName, attributumQName, nomenPrefLabel)
       }
 
       const _addCategorizationSignifiers = function () {
         // the symmetric copulas of categorization
-        _validateAndAddCategorizationAtomicStatements('grox:XJ3h0vQrSCvcqech7CwpXHZ0', 'specimenWrtSpecies', 'isSubTraitOf', 'individualWrtAggregate')
-        _validateAndAddCategorizationAtomicStatements('grox:WK0CjxWXN1z9mhoT5SSsNP2U', 'speciesWrtSpecimen', 'isSubTraitOf', 'aggregateWrtIndividual')
-        _validateAndAddCategorizationAtomicStatements('grox:H57135RLXgbxpQdKYVI94my1', 'subSpeciesWrtSuperSpecies', 'isSubTraitOf', 'aggregateWrtSuperAggregate')
-        _validateAndAddCategorizationAtomicStatements('grox:sA0oWPZh76OPzJontiufRvS5', 'superSpeciesWrtSubSpecies', 'isSubTraitOf', 'superAggregateWrtAggregate')
-        _validateAndAddCategorizationAtomicStatements('grox:xo57ra1o9uvkpd1amXFtLRZg', 'subSpeciesWrtTopDomain', 'isSubTraitOf', 'aggregateWrtJurisdiction')
-        _validateAndAddCategorizationAtomicStatements('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'isSubTraitOf', 'jurisdictionWrtAggregate')
+        _validateAndAddCategorizationStatements('grox:XJ3h0vQrSCvcqech7CwpXHZ0', 'specimenWrtSpecies', 'isSubTraitOf', 'individualWrtAggregate')
+        _validateAndAddCategorizationStatements('grox:WK0CjxWXN1z9mhoT5SSsNP2U', 'speciesWrtSpecimen', 'isSubTraitOf', 'aggregateWrtIndividual')
+        _validateAndAddCategorizationStatements('grox:H57135RLXgbxpQdKYVI94my1', 'subSpeciesWrtSuperSpecies', 'isSubTraitOf', 'aggregateWrtSuperAggregate')
+        _validateAndAddCategorizationStatements('grox:sA0oWPZh76OPzJontiufRvS5', 'superSpeciesWrtSubSpecies', 'isSubTraitOf', 'superAggregateWrtAggregate')
+        _validateAndAddCategorizationStatements('grox:xo57ra1o9uvkpd1amXFtLRZg', 'subSpeciesWrtTopDomain', 'isSubTraitOf', 'aggregateWrtJurisdiction')
+        _validateAndAddCategorizationStatements('grox:U02oAeuYZgCvsroCSF1N49J9', 'topDomainWrtSubSpecies', 'isSubTraitOf', 'jurisdictionWrtAggregate')
       }
 
       // --------------------------------------------------------------------------------

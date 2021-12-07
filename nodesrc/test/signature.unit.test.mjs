@@ -133,22 +133,22 @@ test('add duplicate signifier using QName and signifier object', () => {
   expect(carmenSignifier1.getQName()).toEqual(carmenSignifier3.getQName())
 })
 
-test('add duplicate AtomicStatements using QName and signifier object', () => {
+test('add duplicate Statements using QName and signifier object', () => {
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info/')
   signature.addSignifier('grox:hasTrait')
   const carmenSignifier1 = signature.addSignifier(':carmen')
   const carmenSignifier2 = signature.getSignifier(carmenSignifier1)
-  signature.addAtomicStatement(':carmen', 'grox:hasTrait', 'blue')
-  signature.addAtomicStatement(carmenSignifier2, 'grox:hasTrait', 'blue')
-  signature.addAtomicStatement(carmenSignifier1, 'grox:hasTrait', 'blue')
+  signature.addStatement(':carmen', 'grox:hasTrait', 'blue')
+  signature.addStatement(carmenSignifier2, 'grox:hasTrait', 'blue')
+  signature.addStatement(carmenSignifier1, 'grox:hasTrait', 'blue')
 
   expect(carmenSignifier1.getQName()).toBe(carmenSignifier2.getQName())
-  expect(carmenSignifier1.getAtomicStatementsWithThisAsNomen().length).toBe(1)
-  expect(carmenSignifier2.getAtomicStatementsWithThisAsNomen().length).toBe(1)
+  expect(carmenSignifier1.getStatementsWithThisAsNomen().length).toBe(1)
+  expect(carmenSignifier2.getStatementsWithThisAsNomen().length).toBe(1)
 })
 
-test('count AtomicStatements with different literal attributums', () => {
+test('count Statements with different literal attributums', () => {
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info/')
 
@@ -160,19 +160,19 @@ test('count AtomicStatements with different literal attributums', () => {
   expect(signature.addSignifier(':iman')).not.toBeUndefined()
   expect(signature.addSignifier(':jamaal')).not.toBeUndefined()
 
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', 'pink')
-  signature.addAtomicStatement(':bob', 'grox:hasTrait', 'yellow')
-  signature.addAtomicStatement(':carmen', 'grox:hasTrait', 'yellow')
-  signature.addAtomicStatement(':diego', 'grox:hasTrait', 'blue')
-  signature.addAtomicStatement(':iman', 'grox:hasTrait', 'yellow')
-  signature.addAtomicStatement(':jamaal', 'grox:hasTrait', 'blue')
+  signature.addStatement(':alice', 'grox:hasTrait', 'pink')
+  signature.addStatement(':bob', 'grox:hasTrait', 'yellow')
+  signature.addStatement(':carmen', 'grox:hasTrait', 'yellow')
+  signature.addStatement(':diego', 'grox:hasTrait', 'blue')
+  signature.addStatement(':iman', 'grox:hasTrait', 'yellow')
+  signature.addStatement(':jamaal', 'grox:hasTrait', 'blue')
 
-  expect(signature.getAtomicStatementsWithLiteralAsAttributum('pink').length).toBe(1)
-  expect(signature.getAtomicStatementsWithLiteralAsAttributum('yellow').length).toBe(3)
-  expect(signature.getAtomicStatementsWithLiteralAsAttributum('blue').length).toBe(2)
+  expect(signature.getStatementsWithLiteralAsAttributum('pink').length).toBe(1)
+  expect(signature.getStatementsWithLiteralAsAttributum('yellow').length).toBe(3)
+  expect(signature.getStatementsWithLiteralAsAttributum('blue').length).toBe(2)
 })
 
-test('count AtomicStatements with with different object attributums', () => {
+test('count Statements with with different object attributums', () => {
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info/')
   signature.addNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -186,21 +186,21 @@ test('count AtomicStatements with with different object attributums', () => {
   signature.addSignifier(':diego')
   const jamaalSignifier = signature.addSignifier(':diego')
 
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', ':mother')
-  signature.addAtomicStatement(':bob', traitSignifier, ':father')
-  signature.addAtomicStatement(carmenSignifier, 'grox:hasTrait', ':mother')
-  signature.addAtomicStatement(diegoSignifier, 'grox:hasTrait', ':father')
+  signature.addStatement(':alice', 'grox:hasTrait', ':mother')
+  signature.addStatement(':bob', traitSignifier, ':father')
+  signature.addStatement(carmenSignifier, 'grox:hasTrait', ':mother')
+  signature.addStatement(diegoSignifier, 'grox:hasTrait', ':father')
 
   const motherSignifier = signature.getSignifier(':mother')
   const fatherSignifier = signature.getSignifier(':father')
-  signature.addAtomicStatement(':iman', traitSignifier, motherSignifier)
-  signature.addAtomicStatement(jamaalSignifier, 'grox:hasTrait', fatherSignifier)
+  signature.addStatement(':iman', traitSignifier, motherSignifier)
+  signature.addStatement(jamaalSignifier, 'grox:hasTrait', fatherSignifier)
 
-  expect(motherSignifier.getAtomicStatementsWithThisAsAttributum().length).toBe(3)
-  expect(fatherSignifier.getAtomicStatementsWithThisAsAttributum().length).toBe(3)
+  expect(motherSignifier.getStatementsWithThisAsAttributum().length).toBe(3)
+  expect(fatherSignifier.getStatementsWithThisAsAttributum().length).toBe(3)
 })
 
-test('count AtomicStatements with with different copulas', () => {
+test('count Statements with with different copulas', () => {
   const signature = new Signature()
   signature.addNamespace('grox', 'http://grox.info/')
   signature.addNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -215,24 +215,24 @@ test('count AtomicStatements with with different copulas', () => {
   signature.addSignifier(':diego')
   const jamaalSignifier = signature.addSignifier(':diego')
 
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', 'magenta')
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', 'circular')
-  signature.addAtomicStatement(':alice', 'grox:hasTrait', 'mammalian')
-  signature.addAtomicStatement(':bob', traitSignifier, 'magenta')
-  signature.addAtomicStatement(carmenSignifier, 'rdf:type', ':mother')
-  signature.addAtomicStatement(diegoSignifier, 'rdf:type', 'grox:father')
+  signature.addStatement(':alice', 'grox:hasTrait', 'magenta')
+  signature.addStatement(':alice', 'grox:hasTrait', 'circular')
+  signature.addStatement(':alice', 'grox:hasTrait', 'mammalian')
+  signature.addStatement(':bob', traitSignifier, 'magenta')
+  signature.addStatement(carmenSignifier, 'rdf:type', ':mother')
+  signature.addStatement(diegoSignifier, 'rdf:type', 'grox:father')
 
   const motherSignifier = signature.getSignifier(':mother')
   const fatherSignifier = signature.getSignifier('grox:father')
-  signature.addAtomicStatement(':iman', typeSignifier, motherSignifier)
-  signature.addAtomicStatement(jamaalSignifier, 'grox:hasTrait', 'cyan')
-  signature.addAtomicStatement(jamaalSignifier, typeSignifier, fatherSignifier)
+  signature.addStatement(':iman', typeSignifier, motherSignifier)
+  signature.addStatement(jamaalSignifier, 'grox:hasTrait', 'cyan')
+  signature.addStatement(jamaalSignifier, typeSignifier, fatherSignifier)
 
-  expect(motherSignifier.getAtomicStatementsWithThisAsAttributum().length).toBe(2)
-  expect(fatherSignifier.getAtomicStatementsWithThisAsAttributum().length).toBe(2)
-  expect(signature.getAtomicStatementsWithLiteralAsAttributum('magenta').length).toBe(2)
-  expect(signature.getAtomicStatementsWithLiteralAsAttributum('cyan').length).toBe(1)
+  expect(motherSignifier.getStatementsWithThisAsAttributum().length).toBe(2)
+  expect(fatherSignifier.getStatementsWithThisAsAttributum().length).toBe(2)
+  expect(signature.getStatementsWithLiteralAsAttributum('magenta').length).toBe(2)
+  expect(signature.getStatementsWithLiteralAsAttributum('cyan').length).toBe(1)
 
-  expect(traitSignifier.getAtomicStatementsWithThisAsCopula().length).toBe(5)
-  expect(typeSignifier.getAtomicStatementsWithThisAsCopula().length).toBe(4)
+  expect(traitSignifier.getStatementsWithThisAsCopula().length).toBe(5)
+  expect(typeSignifier.getStatementsWithThisAsCopula().length).toBe(4)
 })
